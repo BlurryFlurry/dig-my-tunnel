@@ -15,7 +15,7 @@ read -p "Set custom banner?[Y/n]" -n 1 -r
 
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-	sed 's|DROPBEAR_BANNER=""|DROPBEAR_BANNER="/etc/dropbear/banner.dat"|' /etc/default/dropbear
+	sed -i 's|DROPBEAR_BANNER=""|DROPBEAR_BANNER="/etc/dropbear/banner.dat"|' /etc/default/dropbear
 	echo "Paste your banner and then type EOF (in uppercase) and hit ENTER"
 	while read line
 	do
