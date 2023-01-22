@@ -10,6 +10,20 @@ wget https://github.com/ambrop72/badvpn/archive/master.zip && unzip master.zip &
 mkdir -p badvpn-master/build
 cd badvpn-master/build
 cmake .. -DBUILD_NOTHING_BY_DEFAULT=1 -DBUILD_UDPGW=1 && make install
+
+read -p "Set custom banner?[Y/n]" -n 1 -r
+
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+	sed 's|DROPBEAR_BANNER=""|DROPBEAR_BANNER="/etc/dropbear/banner.dat"|' /etc/default/dropbear
+	echo "Paste your banner and then type EOF (in uppercase) and hit ENTER"
+	while read line
+	do
+ 		[[ "$line" == "EOF" ]] && break
+		echo "$line" >> "/etc/dropbear/banner.dat"
+	done
+fi
+
 wget -P /etc/systemd/system/ https://gitlab.com/PANCHO7532/scripts-and-random-code/-/raw/master/nfree/nodews1.service
 mkdir /etc/p7common
 wget -P /etc/p7common https://gitlab.com/PANCHO7532/scripts-and-random-code/-/raw/master/nfree/proxy3.js
@@ -38,11 +52,12 @@ sed -i 's/enforce_for_root//' /etc/pam.d/common-password
 echo '/bin/false' >> /etc/shells
 echo '/usr/sbin/nologin' >> /etc/shells
 clear
-read -p "Create "testuser"? [N/y]" -n 1 -r
+read -p "Create a user?[N/y]" -n 1 -r
 
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-    useradd -M testuser -s /bin/false && echo "User successfully created." && passwd testuser
+    read -p "Enter username: " ssh_user
+    useradd -M $ssh_user -s /bin/false && echo "$ssh_user user has successfully created." && passwd $ssh_user
 fi
 read -p "Enter your cloudfront url: " clfurl
 clfurl=$(echo $clfurl |sed 's/https\?:\/\///')
