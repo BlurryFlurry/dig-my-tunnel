@@ -4,7 +4,7 @@ if [[ $EUID > 0 ]]
   exit
 fi
 set -e
-apt update && apt upgrade
+apt update -y && apt upgrade -y
 apt install -y dropbear squid stunnel cmake make wget gcc build-essential nodejs unzip zip tmux BadVPN UDPGW
 wget https://github.com/ambrop72/badvpn/archive/master.zip && unzip master.zip && rm master.zip
 mkdir -p badvpn-master/build
