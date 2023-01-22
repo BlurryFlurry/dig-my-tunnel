@@ -1,1 +1,8 @@
-# dropbear_squid_stunnel_nodejs_proxy_badvpn_install
+# Dropbear Squid Stunnel Nodejs Proxy Badvpn auto installer
+
+```
+apt-get install curl -y && bash <(curl https://raw.githubusercontent.com/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install/master/install.sh)
+````
+
+
+Nodejs proxy script credits goes to [@PANCHO7532](https://gitlab.com/PANCHO7532)
