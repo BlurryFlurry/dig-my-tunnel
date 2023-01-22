@@ -6,3 +6,4 @@ apt-get install curl -y && bash <(curl https://raw.githubusercontent.com/BlurryF
 
 
 Nodejs proxy script credits goes to [@PANCHO7532](https://gitlab.com/PANCHO7532)
+More credits to [@noobconner21](https://gitlab.com/noobconner21) for helping me out
