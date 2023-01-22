@@ -47,7 +47,7 @@ unzip *.zip
 cat private.key certificate.crt ca_bundle.crt >/etc/stunnel/stunnel.pem
 systemctl start stunnel4
 systemctl enable stunnel4
-wget -P /etc/systemd/system/ https://gitlab.com/PANCHO7532/scripts-and-random-code/-/raw/master/nfree/badvpn.service
+wget -P /etc/systemd/system/ https://raw.githubusercontent.com/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install/main/badvpn.service
 systemctl enable --now badvpn
 sed -i 's/enforce_for_root//' /etc/pam.d/common-password
 echo '/bin/false' >> /etc/shells
