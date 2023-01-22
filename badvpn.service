@@ -1,0 +1,9 @@
+[Unit]
+Description=BadVPN UDPGW Service
+
+[Service]
+ExecStart=/bin/bash -c "$(which badvpn-udpgw) --listen-addr 127.0.0.1:7300 --max-clients 250 --max-connections-for-client 3"
+ExecStop=/bin/bash -c "pkill badvpn-udpgw"
+
+[Install]
+WantedBy=multi-user.target
