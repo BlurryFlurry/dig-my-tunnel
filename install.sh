@@ -12,11 +12,11 @@ cd badvpn-master/build
 cmake .. -DBUILD_NOTHING_BY_DEFAULT=1 -DBUILD_UDPGW=1 && make install
 
 read -p "Set custom banner?[Y/n]" -n 1 -r
-echo ""
 
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
 	sed -i 's|DROPBEAR_BANNER=""|DROPBEAR_BANNER="/etc/dropbear/banner.dat"|' /etc/default/dropbear
+	clear
 	echo "Paste your banner and then type EOF (in uppercase) and hit ENTER"
 	while read line
 	do
