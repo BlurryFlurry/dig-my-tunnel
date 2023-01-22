@@ -57,6 +57,7 @@ read -p "Create a user?[N/y]" -n 1 -r
 
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
+    echo ""
     read -p "Enter username: " ssh_user
     useradd -M $ssh_user -s /bin/false && echo "$ssh_user user has successfully created." && passwd $ssh_user
 fi
