@@ -24,7 +24,7 @@ then
 	done
 fi
 
-wget -P /etc/systemd/system/ https://gitlab.com/PANCHO7532/scripts-and-random-code/-/raw/master/nfree/nodews1.service
+wget -P /etc/systemd/system/ https://raw.githubusercontent.com/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install/main/nodews1.service
 mkdir /etc/p7common
 wget -P /etc/p7common https://gitlab.com/PANCHO7532/scripts-and-random-code/-/raw/master/nfree/proxy3.js
 systemctl enable --now nodews1.service
