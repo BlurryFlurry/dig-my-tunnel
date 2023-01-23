@@ -19,6 +19,10 @@ mkdir -p badvpn-master/build
 cd badvpn-master/build
 cmake .. -DBUILD_NOTHING_BY_DEFAULT=1 -DBUILD_UDPGW=1 && make install
 
+# dropbear config
+sed -i 's/NO_START=1/NO_START=0/' /etc/default/dropbear
+sed -i 's/DROPBEAR_PORT=22/DROPBEAR_PORT=40000/' /etc/default/dropbear
+
 # set banner
 read -p "Set custom banner?[Y/n]" -n 1 -r
 
