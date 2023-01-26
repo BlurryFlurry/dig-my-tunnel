@@ -16,6 +16,7 @@ set -e
 #######################################################################################
 GREEN="\e[32m"
 YELLOW="\e[33m"
+ENDCOLOR="\e[0m"
 
 #spinner function
 spinner()
@@ -89,9 +90,9 @@ zerossl_setup(){
           2)
               echo "Provide a direct remote download link to fetch the zerossl certificate zip file"
               read -p "What's your zerossl zip file link? (Dropbox): " zerofileslink
-              until [ "$(curl -o /dev/null --silent --head --write-out '%{http_code}' $zerofileslink)" -eq 200 ]
+              until [ "$(curl -o /dev/null --silent --head --write-out '%{http_code}' $zerofileslink 2>/dev/null)" -eq 200 ]
                 do
-                  read -p "Please provide a valid download url to your zerossl zip file (Dropbox): " zerofileslink
+                  read -p $'\e[31mPlease provide a valid download url to your zerossl zip file (Dropbox)\e[0m: ' zerofileslink
                 done
               wget "$zerofileslink"
 
@@ -117,21 +118,21 @@ zerossl_setup(){
 #######################################################################################
 
 # install updates
-echo -ne "\n${YELLOW} Updating packages..."
+echo -ne "\n${YELLOW} Updating packages...${ENDCOLOR}"
 apt update -y && apt upgrade -y
 
 # install dependencies
-echo -ne "\n${YELLOW}Install dependencies..."
+echo -ne "\n${YELLOW}Installing dependencies...${ENDCOLOR}"
 dep_install >/dev/null 2>&1 &
 spinner
-echo -ne "\n${GREEN}Done."
+echo -ne "${GREEN}Done.${ENDCOLOR}\n"
 
 
 # build and install badvpn
-echo -ne "\n${YELLOW}Build and install badvpn..."
+echo -ne "\n${YELLOW}Building and installing badvpn...${ENDCOLOR}"
 build_install_badvpn >/dev/null 2>&1 &
 spinner
-echo -ne "\n${GREEN}Done."
+echo -ne "${GREEN}Done.${ENDCOLOR}\n"
 
 
 # dropbear config
@@ -154,42 +155,46 @@ then
 fi
 
 # systemd unit file node javascript proxy
-echo -ne "\n${YELLOW}Downloading systemd unit file of nodejs proxy..."
+echo -ne "\n${YELLOW}Downloading systemd unit file of nodejs proxy...${ENDCOLOR}\n"
 wget -P /etc/systemd/system/ https://raw.githubusercontent.com/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install/main/nodews1.service
 mkdir /etc/p7common
 
 # proxy script
-echo -ne "\n${YELLOW}Downloading nodejs proxy script..."
+echo -ne "\n${YELLOW}Downloading nodejs proxy script...${ENDCOLOR}\n"
 wget -P /etc/p7common https://gitlab.com/PANCHO7532/scripts-and-random-code/-/raw/master/nfree/proxy3.js
 
 # enable startup and run service
-echo -ne "\n${YELLOW}Enabling and starting the service..."
-systemctl enable --now nodews1.service
+echo -ne "\n${YELLOW}Enabling and starting the service...${ENDCOLOR}"
+systemctl enable --now nodews1.service >/dev/null 2>&1 &
+spinner
+echo -ne "${GREEN}Done.${ENDCOLOR}\n"
 
 # stunnel config listens on port 443
-echo -ne "\n${YELLOW}Configuring stunnel..."
-wget -P /etc/stunnel/ https://gitlab.com/PANCHO7532/scripts-and-random-code/-/raw/master/nfree/stunnel.conf
+echo -ne "\n${YELLOW}Configuring stunnel...${ENDCOLOR}"
+wget -P /etc/stunnel/ https://gitlab.com/PANCHO7532/scripts-and-random-code/-/raw/master/nfree/stunnel.conf >/dev/null 2>&1 &
+spinner
+echo -ne "${GREEN}Done.${ENDCOLOR}\n"
 
 zerossl_setup
 
 # badvpn systemd service unit file, and start the service
-echo -ne "\n${YELLOW}Downloading badvpn systemd service unit file..."
+echo -ne "\n${YELLOW}Downloading badvpn systemd service unit file...${ENDCOLOR}"
 wget -P /etc/systemd/system/ https://raw.githubusercontent.com/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install/main/badvpn.service >/dev/null 2>&1 &
 spinner
-echo -ne "\n${GREEN}Done."
-echo -ne "\n${YELLOW}starting badvpn unit file..."
+echo -ne "${GREEN}Done.${ENDCOLOR}\n"
+echo -ne "\n${YELLOW}starting badvpn unit file...${ENDCOLOR}"
 systemctl enable --now badvpn >/dev/null 2>&1 &
 spinner
-echo -ne "\n${GREEN}Done."
+echo -ne "${GREEN}Done.${ENDCOLOR}\n"
 
-echo -ne "\n${YELLOW}Configuring security settings.."
+echo -ne "\n${YELLOW}Configuring security settings..${ENDCOLOR}"
 # pam service disable enforce_for_root option if exists
 sed -i 's/enforce_for_root//' /etc/pam.d/common-password
 
 # add fake shell paths to prevent interractive shell login
 echo '/bin/false' >> /etc/shells
 echo '/usr/sbin/nologin' >> /etc/shells
-echo -ne "\n${GREEN}Done."
+echo -ne "${GREEN}Done.${ENDCOLOR}\n"
 clear
 
 # create user
@@ -198,8 +203,15 @@ read -p "Create a user?[N/y]" -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
     echo ""
-    read -p "Enter username: " ssh_user
+    read -p "Enter username (characters): " ssh_user
+    until [[ "$ssh_user" =~ ^[0-9a-zA-Z]{2,8}$ ]]
+    do
+      read -p $'\e[31mPlease enter a valid username\e[0m: ' ssh_user
+    done
+
     useradd -M $ssh_user -s /bin/false && echo "$ssh_user user has successfully created." && passwd $ssh_user
+    read -p "Max logins limit: " maxlogins
+    echo "ssh_user  hard  maxlogins ${maxlogins}" >/etc/security/limits.d/ssh_user_user
 fi
 
 # display payload creation from cloudfront url
