@@ -14,30 +14,62 @@ set -e
 ########                       SETUP FUNCTIONS                               ##########
 #######                                                                     ###########
 #######################################################################################
-GREEN="\e[32m"
-YELLOW="\e[33m"
-ENDCOLOR="\e[0m"
 
-#spinner function
-spinner()
-{
-    #Loading spinner
-    local pid=$!
-    local delay=0.75
-    local spinstr='|/-\'
-    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
-        local temp=${spinstr#?}
-        printf " [%c]  " "$spinstr"
-        local spinstr=$temp${spinstr%"$temp"}
-        sleep $delay
-        printf "\b\b\b\b\b\b"
-    done
-    printf "    \b\b\b\b"
+declare process_echo_history
+declare last_process_status
+spinner() {
+  #spinner animation
+  local pid=$!
+  local delay=0.20
+  local spinstr='|/-\'
+  while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+    local temp=${spinstr#?}
+    printf " [%c]  " "$spinstr"
+    local spinstr=$temp${spinstr%"$temp"}
+    sleep $delay
+    printf "\b\b\b\b\b\b"
+  done
+  wait $pid
+  last_process_status=$?
+  printf "    \b\b\b\b"
+}
+
+process_echo() {
+  local RED=$(tput setaf 1)
+  local GREEN=$(tput setaf 2)
+  local YELLOW=$(tput setaf 3)
+  local ENDCOLOR=$(tput sgr0)
+  local text="$1"
+  local text_color=${!2:-$(tput sgr0)}
+  local characters=${#text}
+  local start_col=$(($(tput cols) / 2 - $characters / 2))
+  local start_line=$(($(tput lines) / 2))
+  local spinner_col=$(($(tput cols) - 7))
+  tput civis
+  clear
+  echo -e "$process_echo_history"
+
+  tput cup $start_line $start_col
+  tput el
+  echo -en "${text_color}$text${ENDCOLOR}"
+
+  tput cup $start_line $spinner_col
+
+  spinner
+  p_status=$([ "$last_process_status" -eq 0 ] && echo "${GREEN}[DONE]${ENDCOLOR}" || echo "${RED}[FAIL]${ENDCOLOR}")
+  echo -e "${GREEN}${p_status}${ENDCOLOR}"
+  process_echo_history+="\n $text ${p_status}"
+  sleep 0.5
+  tput clear
+  echo -e "$process_echo_history $ENDCOLOR"
+  sleep 0.2
+  tput cvvis
+  tput cnorm
 }
 
 # install dependencies function
 dep_install(){
-		apt install -y dialog dropbear squid stunnel cmake make wget gcc build-essential nodejs unzip zip tmux
+		apt install -y dialog dropbear squid stunnel cmake make wget gcc build-essential nodejs unzip zip tmux socat
 	}
 
 # build and install function
@@ -101,11 +133,20 @@ zerossl_setup(){
                 read -r -s -p $'\e[31m Certs directory is still empty, Please upload files and press ESCAPE to continue...\e[0m \n' -d $'\e'
               done
               ;;
-  esac
+          3)
+              echo -e "acme.sh standalone webserver (Beta)\n\n"
+              read -p "Please provide a valid email address: " zerossl_email
+              read -p "Please provide the domain name: " zerossl_domain
 
+              curl https://get.acme.sh | sh -s email="$zerossl_email" --issue -d "$zerossl_domain" --standalone --server letsencrypt --staging --test
+              cat ~/.acme.sh/"$zerossl_domain"/"$zerossl_domain".key ~/.acme.sh/"$zerossl_domain"/"$zerossl_domain" ~/.acme.sh/"$zerossl_domain"/fullchain.cer >/etc/stunnel/stunnel.pem
+
+  esac
   # unzip certs, create stunnel.pem, start stunnel service
-  unzip ./*.zip
-  cat private.key certificate.crt ca_bundle.crt >/etc/stunnel/stunnel.pem
+if test [ ! -f "/etc/stunnel/stunnel.pem" ]; then
+    unzip ./*.zip
+    cat private.key certificate.crt ca_bundle.crt >/etc/stunnel/stunnel.pem
+fi
   systemctl start stunnel4
   systemctl enable stunnel4
 }
@@ -118,21 +159,20 @@ zerossl_setup(){
 #######################################################################################
 
 # install updates
-echo -ne "\n${YELLOW} Updating packages...${ENDCOLOR}"
-apt update -y && apt upgrade -y
+
+apt update -y 2>&1 &
+process_echo "Updating packages..." YELLOW
+apt upgrade -y 2>&1 &
+process_echo "Upgrading..." YELLOW
 
 # install dependencies
-echo -ne "\n${YELLOW}Installing dependencies...${ENDCOLOR}"
 dep_install >/dev/null 2>&1 &
-spinner
-echo -ne "${GREEN}Done.${ENDCOLOR}\n"
+process_echo "Installing dependencies..." YELLOW
 
 
 # build and install badvpn
-echo -ne "\n${YELLOW}Building and installing badvpn...${ENDCOLOR}"
 build_install_badvpn >/dev/null 2>&1 &
-spinner
-echo -ne "${GREEN}Done.${ENDCOLOR}\n"
+process_echo "Building and installing badvpn..." YELLOW
 
 
 # dropbear config
@@ -155,46 +195,41 @@ then
 fi
 
 # systemd unit file node javascript proxy
-echo -ne "\n${YELLOW}Downloading systemd unit file of nodejs proxy...${ENDCOLOR}\n"
-wget -P /etc/systemd/system/ https://raw.githubusercontent.com/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install/main/nodews1.service
+wget -P /etc/systemd/system/ https://raw.githubusercontent.com/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install/main/nodews1.service 2>&1 &
+process_echo "Downloading systemd unit file of nodejs proxy..." YELLOW
 mkdir /etc/p7common
 
 # proxy script
-echo -ne "\n${YELLOW}Downloading nodejs proxy script...${ENDCOLOR}\n"
-wget -P /etc/p7common https://gitlab.com/PANCHO7532/scripts-and-random-code/-/raw/master/nfree/proxy3.js
+wget -P /etc/p7common https://gitlab.com/PANCHO7532/scripts-and-random-code/-/raw/master/nfree/proxy3.js 2>&1 &
+process_echo "Downloading nodejs proxy script..." YELLOW
 
 # enable startup and run service
-echo -ne "\n${YELLOW}Enabling and starting the service...${ENDCOLOR}"
 systemctl enable --now nodews1.service >/dev/null 2>&1 &
-spinner
-echo -ne "${GREEN}Done.${ENDCOLOR}\n"
+process_echo "Enabling and starting the service..." YELLOW
 
 # stunnel config listens on port 443
-echo -ne "\n${YELLOW}Configuring stunnel...${ENDCOLOR}"
 wget -P /etc/stunnel/ https://gitlab.com/PANCHO7532/scripts-and-random-code/-/raw/master/nfree/stunnel.conf >/dev/null 2>&1 &
-spinner
-echo -ne "${GREEN}Done.${ENDCOLOR}\n"
+process_echo "Configuring stunnel..." YELLOW
 
 zerossl_setup
 
 # badvpn systemd service unit file, and start the service
-echo -ne "\n${YELLOW}Downloading badvpn systemd service unit file...${ENDCOLOR}"
-wget -P /etc/systemd/system/ https://raw.githubusercontent.com/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install/main/badvpn.service >/dev/null 2>&1 &
-spinner
-echo -ne "${GREEN}Done.${ENDCOLOR}\n"
-echo -ne "\n${YELLOW}starting badvpn unit file...${ENDCOLOR}"
-systemctl enable --now badvpn >/dev/null 2>&1 &
-spinner
-echo -ne "${GREEN}Done.${ENDCOLOR}\n"
 
-echo -ne "\n${YELLOW}Configuring security settings..${ENDCOLOR}"
+wget -P /etc/systemd/system/ https://raw.githubusercontent.com/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install/main/badvpn.service >/dev/null 2>&1 &
+process_echo "Downloading badvpn systemd service unit file..." YELLOW
+
+systemctl enable --now badvpn >/dev/null 2>&1 &
+process_echo "starting badvpn unit file..." YELLOW
+
+echo "Configuring security settings.."
 # pam service disable enforce_for_root option if exists
 sed -i 's/enforce_for_root//' /etc/pam.d/common-password
 
 # add fake shell paths to prevent interractive shell login
 echo '/bin/false' >> /etc/shells
 echo '/usr/sbin/nologin' >> /etc/shells
-echo -ne "${GREEN}Done.${ENDCOLOR}\n"
+echo "Done."
+sleep 1
 clear
 
 # create user
@@ -209,9 +244,11 @@ then
       read -p $'\e[31mPlease enter a valid username\e[0m: ' ssh_user
     done
 
-    useradd -M $ssh_user -s /bin/false && echo "$ssh_user user has successfully created." && passwd $ssh_user
+    useradd -M "$ssh_user" -s /bin/false && echo "$ssh_user user has successfully created."
+    set +e
+    until passwd $ssh_user; do echo "Try again"; sleep 1; done
     read -p "Max logins limit: " maxlogins
-    echo "ssh_user  hard  maxlogins ${maxlogins}" >/etc/security/limits.d/ssh_user_user
+    echo "ssh_user  hard  maxlogins ${maxlogins}" >/etc/security/limits.d/"$ssh_user"
 fi
 
 # display payload creation from cloudfront url
