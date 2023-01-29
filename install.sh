@@ -94,7 +94,8 @@ zerossl_setup(){
   MENU="Choose one of the following methods for zerossl setup:"
 
   OPTIONS=(1 "Manually upload zerossl zip file to $(pwd) directory"
-           2 "Provide a direct remote download link to fetch the zerossl certificate zip file")
+           2 "Provide a direct remote download link to fetch the zerossl certificate zip file"
+           3 "acme.sh easy automation")
 
   CHOICE=$(dialog --clear \
                   --backtitle "$BACKTITLE" \
@@ -143,7 +144,7 @@ zerossl_setup(){
 
   esac
   # unzip certs, create stunnel.pem, start stunnel service
-if test [ ! -f "/etc/stunnel/stunnel.pem" ]; then
+if [ ! -f "/etc/stunnel/stunnel.pem" ]; then
     unzip ./*.zip
     cat private.key certificate.crt ca_bundle.crt >/etc/stunnel/stunnel.pem
 fi
