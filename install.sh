@@ -141,11 +141,13 @@ zerossl_setup() {
     #              curl https://get.acme.sh | sh -s email="$zerossl_email" --issue -d "$zerossl_domain" --standalone --server letsencrypt --staging --test
     #              cat ~/.acme.sh/"$zerossl_domain"/"$zerossl_domain".key ~/.acme.sh/"$zerossl_domain"/"$zerossl_domain" ~/.acme.sh/"$zerossl_domain"/fullchain.cer >/etc/stunnel/stunnel.pem
 
-    bash acme.sh --register-account -m "$zerossl_email" >/dev/null 2>&1 &
+    curl https://get.acme.sh | sh -s email="$zerossl_email" >/dev/null 2>&1 &
+    process_echo "Installing acme.sh..."
+    bash ~/.acme/acme.sh --register-account -m "$zerossl_email" >/dev/null 2>&1 &
     process_echo "Registering zerossl account..."
-    bash acme.sh --issue --standalone -d "$zerossl_domain" --force --staging --test >/dev/null 2>&1 &
+    bash ~/.acme/acme.sh --issue --standalone -d "$zerossl_domain" --force --staging --test >/dev/null 2>&1 &
     process_echo "issuing standalone certificates..."
-    bash acme.sh --installcert -d "$zerossl_domain" --fullchainpath ./bundle.cer --keypath ./private.key >/dev/null 2>&1 &
+    bash ~/.acme/acme.sh --installcert -d "$zerossl_domain" --fullchainpath ./bundle.cer --keypath ./private.key >/dev/null 2>&1 &
     process_echo "Installing certificates..."
     cat ./private.key ./bundle.cer >/etc/stunnel/stunnel.pem
 
