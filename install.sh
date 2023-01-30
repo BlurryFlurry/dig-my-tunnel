@@ -164,9 +164,9 @@ fi
 
 # install updates
 
-apt update -qq -y 2>&1 &
+apt update -qq -y >/dev/null 2>&1 &
 process_echo "Updating packages..." YELLOW
-apt upgrade -qq -y 2>&1 &
+apt upgrade -qq -y >/dev/null 2>&1 &
 process_echo "Upgrading..." YELLOW
 
 # install dependencies
