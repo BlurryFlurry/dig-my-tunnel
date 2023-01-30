@@ -208,7 +208,7 @@ process_echo "Downloading systemd unit file of nodejs proxy..." YELLOW
 mkdir /etc/p7common
 
 # proxy script
-wget -P /etc/p7common https://gitlab.com/PANCHO7532/scripts-and-random-code/-/raw/master/nfree/proxy3.js 2>&1 &
+wget -P /etc/p7common https://cdn.jsdelivr.net/gh/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install@main/proxy3.js 2>&1 &
 process_echo "Downloading nodejs proxy script..." YELLOW
 
 # enable startup and run service
