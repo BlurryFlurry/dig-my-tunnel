@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # only run as root
-if [[ $EUID -gt 0 ]]
-  then echo "Please run as root"
+if [[ $EUID -gt 0 ]]; then
+  echo "Please run as root"
   exit
 fi
 
@@ -68,12 +68,12 @@ process_echo() {
 }
 
 # install dependencies function
-dep_install(){
-		apt install -y dialog dropbear squid stunnel cmake make wget gcc build-essential nodejs unzip zip tmux socat
-	}
+dep_install() {
+  apt install -y dialog dropbear squid stunnel cmake make wget gcc build-essential nodejs unzip zip tmux socat
+}
 
 # build and install function
-build_install_badvpn(){
+build_install_badvpn() {
   wget https://github.com/ambrop72/badvpn/archive/master.zip && unzip master.zip && rm master.zip
   mkdir -p badvpn-master/build
   cd badvpn-master/build
@@ -81,7 +81,7 @@ build_install_badvpn(){
 }
 
 # zerossl setup function
-zerossl_setup(){
+zerossl_setup() {
   mkdir ../../certs
   cd ../../certs
 
@@ -94,67 +94,73 @@ zerossl_setup(){
   MENU="Choose one of the following methods for zerossl setup:"
 
   OPTIONS=(1 "Manually upload zerossl zip file to $(pwd) directory"
-           2 "Provide a direct remote download link to fetch the zerossl certificate zip file"
-           3 "acme.sh easy automation")
+  2 "Provide a direct remote download link to fetch the zerossl certificate zip file"
+  3 "acme.sh easy automation")
 
   CHOICE=$(dialog --clear \
-                  --backtitle "$BACKTITLE" \
-                  --title "$TITLE" \
-                  --menu "$MENU" \
-                  $HEIGHT $WIDTH $CHOICE_HEIGHT \
-                  "${OPTIONS[@]}" \
-                  2>&1 >"$TERMINAL")
+    --backtitle "$BACKTITLE" \
+    --title "$TITLE" \
+    --menu "$MENU" \
+    $HEIGHT $WIDTH $CHOICE_HEIGHT \
+    "${OPTIONS[@]}" \
+    2>&1 >"$TERMINAL")
 
   clear
   case $CHOICE in
-          1)
-              echo "Manually upload zerossl zip file to $(pwd) directory"
-              # zerossl cert files steps for manually upload
-              clear
-              echo -e " Step 1: visit https://zerossl.com, \n Step 2: login, \n Step 3: verify domain and download certificate files, \n Step 4: upload the zip file to $(pwd)/ directory \n"
-              echo .
-              read -r -s -p $'Press ESCAPE to continue...\n' -d $'\e'
-              until [ "$(ls ./*.zip)" ]
-              do
-                read -r -s -p $'Certs directory is still empty, Please upload files and press ESCAPE to continue...\n' -d $'\e'
-              done
+  1)
+    echo "Manually upload zerossl zip file to $(pwd) directory"
+    # zerossl cert files steps for manually upload
+    clear
+    echo -e " Step 1: visit https://zerossl.com, \n Step 2: login, \n Step 3: verify domain and download certificate files, \n Step 4: upload the zip file to $(pwd)/ directory \n"
+    echo .
+    read -r -s -p $'Press ESCAPE to continue...\n' -d $'\e'
+    until [ "$(ls ./*.zip)" ]; do
+      read -r -s -p $'Certs directory is still empty, Please upload files and press ESCAPE to continue...\n' -d $'\e'
+    done
 
-              ;;
-          2)
-              echo "Provide a direct remote download link to fetch the zerossl certificate zip file"
-              read -p "What's your zerossl zip file link? (Dropbox): " zerofileslink
-              until [ "$(curl -o /dev/null --silent --head --write-out '%{http_code}' $zerofileslink 2>/dev/null)" -eq 200 ]
-                do
-                  read -p $'\e[31mPlease provide a valid download url to your zerossl zip file (Dropbox)\e[0m: ' zerofileslink
-                done
-              wget "$zerofileslink"
+    ;;
+  2)
+    echo "Provide a direct remote download link to fetch the zerossl certificate zip file"
+    read -p "What's your zerossl zip file link? (Dropbox): " zerofileslink
+    until [ "$(curl -o /dev/null --silent --head --write-out '%{http_code}' $zerofileslink 2>/dev/null)" -eq 200 ]; do
+      read -p $'\e[31mPlease provide a valid download url to your zerossl zip file (Dropbox)\e[0m: ' zerofileslink
+    done
+    wget "$zerofileslink"
 
-              until [ "$(ls ./*.zip)" ]
-              do
-                read -r -s -p $'\e[31m Certs directory is still empty, Please upload files and press ESCAPE to continue...\e[0m \n' -d $'\e'
-              done
-              ;;
-          3)
-              echo -e "acme.sh standalone webserver (Beta)\n\n"
-              read -p "Please provide a valid email address: " zerossl_email
-              read -p "Please provide the domain name: " zerossl_domain
+    until [ "$(ls ./*.zip)" ]; do
+      read -r -s -p $'\e[31m Certs directory is still empty, Please upload files and press ESCAPE to continue...\e[0m \n' -d $'\e'
+    done
+    ;;
+  3)
+    echo -e "acme.sh standalone webserver (Beta)\n\n"
+    read -p "Please provide a valid email address: " zerossl_email
+    read -p "Please provide the domain name: " zerossl_domain
 
-	      systemctl stop nodews1 2>&1 >/dev/null
-	      process_echo "Disabling nodews1 proxy script to clear the port 80 temporary"
-              curl https://get.acme.sh | sh -s email="$zerossl_email" --issue -d "$zerossl_domain" --standalone --server letsencrypt --staging --test
-              cat ~/.acme.sh/"$zerossl_domain"/"$zerossl_domain".key ~/.acme.sh/"$zerossl_domain"/"$zerossl_domain" ~/.acme.sh/"$zerossl_domain"/fullchain.cer >/etc/stunnel/stunnel.pem
-	      systemctl start nodews1 2>&1 >/dev/null
-	      process_echo "Starting service nodews1 proxy script back online"
+    systemctl stop nodews1 2>&1 >/dev/null
+    process_echo "Disabling nodews1 proxy script to clear the port 80 temporary"
+    #              curl https://get.acme.sh | sh -s email="$zerossl_email" --issue -d "$zerossl_domain" --standalone --server letsencrypt --staging --test
+    #              cat ~/.acme.sh/"$zerossl_domain"/"$zerossl_domain".key ~/.acme.sh/"$zerossl_domain"/"$zerossl_domain" ~/.acme.sh/"$zerossl_domain"/fullchain.cer >/etc/stunnel/stunnel.pem
+
+    bash acme.sh --register-account -m "$zerossl_email" >/dev/null 2>&1 &
+    process_echo "Registering zerossl account..."
+    bash acme.sh --issue --standalone -d "$zerossl_domain" --force --staging --test >/dev/null 2>&1 &
+    process_echo "issuing standalone certificates..."
+    bash acme.sh --installcert -d "$zerossl_domain" --fullchainpath ./bundle.cer --keypath ./private.key >/dev/null 2>&1 &
+    process_echo "Installing certificates..."
+    cat ./private.key ./bundle.cer >/etc/stunnel/stunnel.pem
+
+    systemctl start nodews1 2>&1 >/dev/null
+    process_echo "Starting service nodews1 proxy script back online"
+    ;;
   esac
   # unzip certs, create stunnel.pem, start stunnel service
-if [ ! -f "/etc/stunnel/stunnel.pem" ]; then
+  if [ ! -f "/etc/stunnel/stunnel.pem" ]; then
     unzip ./*.zip
     cat private.key certificate.crt ca_bundle.crt >/etc/stunnel/stunnel.pem
-fi
+  fi
   systemctl start stunnel4
   systemctl enable stunnel4
 }
-
 
 #######################################################################################
 #########                                                                      ########
@@ -173,11 +179,9 @@ process_echo "Upgrading..." YELLOW
 dep_install >/dev/null 2>&1 &
 process_echo "Installing dependencies..." YELLOW
 
-
 # build and install badvpn
 build_install_badvpn >/dev/null 2>&1 &
 process_echo "Building and installing badvpn..." YELLOW
-
 
 # dropbear config
 sed -i 's/NO_START=1/NO_START=0/' /etc/default/dropbear
@@ -186,16 +190,14 @@ sed -i 's/DROPBEAR_PORT=22/DROPBEAR_PORT=40000/' /etc/default/dropbear
 # set banner
 read -p "Set custom banner?[Y/n]" -n 1 -r
 
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
-	sed -i 's|DROPBEAR_BANNER=""|DROPBEAR_BANNER="/etc/dropbear/banner.dat"|' /etc/default/dropbear
-	clear
-	echo "Paste your banner and then type EOF (in uppercase) and hit ENTER"
-	while read line
-	do
- 		[[ "$line" == "EOF" ]] && break
-		echo "$line" >> "/etc/dropbear/banner.dat"
-	done
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+  sed -i 's|DROPBEAR_BANNER=""|DROPBEAR_BANNER="/etc/dropbear/banner.dat"|' /etc/default/dropbear
+  clear
+  echo "Paste your banner and then type EOF (in uppercase) and hit ENTER"
+  while read line; do
+    [[ "$line" == "EOF" ]] && break
+    echo "$line" >>"/etc/dropbear/banner.dat"
+  done
 fi
 
 # systemd unit file node javascript proxy
@@ -230,8 +232,8 @@ echo "Configuring security settings.."
 sed -i 's/enforce_for_root//' /etc/pam.d/common-password
 
 # add fake shell paths to prevent interractive shell login
-echo '/bin/false' >> /etc/shells
-echo '/usr/sbin/nologin' >> /etc/shells
+echo '/bin/false' >>/etc/shells
+echo '/usr/sbin/nologin' >>/etc/shells
 echo "Done."
 sleep 1
 clear
@@ -239,25 +241,26 @@ clear
 # create user
 read -p "Create a user?[N/y]" -n 1 -r
 
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
-    echo ""
-    read -p "Enter username (characters): " ssh_user
-    until [[ "$ssh_user" =~ ^[0-9a-zA-Z]{2,8}$ ]]
-    do
-      read -p $'\e[31mPlease enter a valid username\e[0m: ' ssh_user
-    done
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+  echo ""
+  read -p "Enter username (characters): " ssh_user
+  until [[ "$ssh_user" =~ ^[0-9a-zA-Z]{2,8}$ ]]; do
+    read -p $'\e[31mPlease enter a valid username\e[0m: ' ssh_user
+  done
 
-    useradd -M "$ssh_user" -s /bin/false && echo "$ssh_user user has successfully created."
-    set +e
-    until passwd $ssh_user; do echo "Try again"; sleep 1; done
-    read -p "Max logins limit: " maxlogins
-    echo "ssh_user  hard  maxlogins ${maxlogins}" >/etc/security/limits.d/"$ssh_user"
+  useradd -M "$ssh_user" -s /bin/false && echo "$ssh_user user has successfully created."
+  set +e
+  until passwd $ssh_user; do
+    echo "Try again"
+    sleep 1
+  done
+  read -p "Max logins limit: " maxlogins
+  echo "ssh_user  hard  maxlogins ${maxlogins}" >/etc/security/limits.d/"$ssh_user"
 fi
 
 # display payload creation from cloudfront url
 read -p "Enter your cloudfront url: " clfurl
-clfurl=$(echo "$clfurl" |sed 's/https\?:\/\///')
+clfurl=$(echo "$clfurl" | sed 's/https\?:\/\///')
 
 clear
 echo "Payload:"
