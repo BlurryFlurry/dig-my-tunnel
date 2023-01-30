@@ -143,11 +143,11 @@ zerossl_setup() {
 
     curl https://get.acme.sh | sh -s email="$zerossl_email" >/dev/null 2>&1 &
     process_echo "Installing acme.sh..."
-    bash ~/.acme/acme.sh --register-account -m "$zerossl_email" >/dev/null 2>&1 &
+    bash ~/.acme.sh/acme.sh --register-account -m "$zerossl_email" >/dev/null 2>&1 &
     process_echo "Registering zerossl account..."
-    bash ~/.acme/acme.sh --issue --standalone -d "$zerossl_domain" --force --staging --test >/dev/null 2>&1 &
+    bash ~/.acme.sh/acme.sh --issue --standalone -d "$zerossl_domain" --force --staging --test >/dev/null 2>&1 &
     process_echo "issuing standalone certificates..."
-    bash ~/.acme/acme.sh --installcert -d "$zerossl_domain" --fullchainpath ./bundle.cer --keypath ./private.key >/dev/null 2>&1 &
+    bash ~/.acme.sh/acme.sh --installcert -d "$zerossl_domain" --fullchainpath ./bundle.cer --keypath ./private.key >/dev/null 2>&1 &
     process_echo "Installing certificates..."
     cat ./private.key ./bundle.cer >/etc/stunnel/stunnel.pem
 
