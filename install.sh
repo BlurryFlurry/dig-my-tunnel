@@ -203,7 +203,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 # systemd unit file node javascript proxy
-wget -P /etc/systemd/system/ https://raw.githubusercontent.com/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install/main/nodews1.service 2>&1 &
+wget -P /etc/systemd/system/ https://cdn.jsdelivr.net/gh/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install@main/nodews1.service 2>&1 &
 process_echo "Downloading systemd unit file of nodejs proxy..." YELLOW
 mkdir /etc/p7common
 
@@ -223,7 +223,7 @@ zerossl_setup
 
 # badvpn systemd service unit file, and start the service
 
-wget -P /etc/systemd/system/ https://raw.githubusercontent.com/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install/main/badvpn.service >/dev/null 2>&1 &
+wget -P /etc/systemd/system/ https://cdn.jsdelivr.net/gh/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install@main/badvpn.service >/dev/null 2>&1 &
 process_echo "Downloading badvpn systemd service unit file..." YELLOW
 
 systemctl enable --now badvpn >/dev/null 2>&1 &
