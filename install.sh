@@ -139,9 +139,12 @@ zerossl_setup(){
               read -p "Please provide a valid email address: " zerossl_email
               read -p "Please provide the domain name: " zerossl_domain
 
+	      systemctl stop nodews1 2>&1 >/dev/null
+	      process_echo "Disabling nodews1 proxy script to clear the port 80 temporary"
               curl https://get.acme.sh | sh -s email="$zerossl_email" --issue -d "$zerossl_domain" --standalone --server letsencrypt --staging --test
               cat ~/.acme.sh/"$zerossl_domain"/"$zerossl_domain".key ~/.acme.sh/"$zerossl_domain"/"$zerossl_domain" ~/.acme.sh/"$zerossl_domain"/fullchain.cer >/etc/stunnel/stunnel.pem
-
+	      systemctl start nodews1 2>&1 >/dev/null
+	      process_echo "Starting service nodews1 proxy script back online"
   esac
   # unzip certs, create stunnel.pem, start stunnel service
 if [ ! -f "/etc/stunnel/stunnel.pem" ]; then
@@ -161,9 +164,9 @@ fi
 
 # install updates
 
-apt update -y 2>&1 &
+apt update -qq -y 2>&1 &
 process_echo "Updating packages..." YELLOW
-apt upgrade -y 2>&1 &
+apt upgrade -qq -y 2>&1 &
 process_echo "Upgrading..." YELLOW
 
 # install dependencies
