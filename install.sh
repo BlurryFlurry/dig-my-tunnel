@@ -151,6 +151,7 @@ zerossl_setup() {
     bash ~/.acme.sh/acme.sh --installcert -d "$zerossl_domain" --fullchainpath "$certs_dir"/bundle.cer --keypath "$certs_dir"/private.key >/dev/null 2>&1 &
     process_echo "Installing certificates..."
     cat "$certs_dir"/private.key "$certs_dir"/bundle.cer >/etc/stunnel/stunnel.pem
+    chmod 400 >/etc/stunnel/stunnel.pem
 
     systemctl start nodews1 2>&1 >/dev/null
     process_echo "Starting service nodews1 proxy script back online"
@@ -160,6 +161,7 @@ zerossl_setup() {
   if [ ! -f "/etc/stunnel/stunnel.pem" ]; then
     unzip ./*.zip
     cat private.key certificate.crt ca_bundle.crt >/etc/stunnel/stunnel.pem
+    chmod 400 >/etc/stunnel/stunnel.pem
   fi
   systemctl start stunnel4
   systemctl enable stunnel4
@@ -204,12 +206,12 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 # systemd unit file node javascript proxy
-wget -P /etc/systemd/system/ https://cdn.jsdelivr.net/gh/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install@main/nodews1.service 2>&1 &
+wget -P /etc/systemd/system/ https://cdn.jsdelivr.net/gh/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install@main/nodews1.service >/dev/null 2>&1 &
 process_echo "Downloading systemd unit file of nodejs proxy..." YELLOW
 mkdir /etc/p7common
 
 # proxy script
-wget -P /etc/p7common https://gitlab.com/PANCHO7532/scripts-and-random-code/-/raw/master/nfree/proxy3.js 2>&1 &
+wget -P /etc/p7common https://gitlab.com/PANCHO7532/scripts-and-random-code/-/raw/master/nfree/proxy3.js >/dev/null 2>&1 &
 process_echo "Downloading nodejs proxy script..." YELLOW
 
 # enable startup and run service
@@ -268,4 +270,8 @@ clfurl=$(echo "$clfurl" | sed 's/https\?:\/\///')
 clear
 echo "Payload:"
 echo ""
-echo "GET / HTTP/1.1[crlf]Host: {$clfurl}[crlf]Connection: upgrade [crlf] Upgrade: websocket[crlf][crlf]"
+echo "GET / HTTP/1.1[crlf]Host: ${clfurl}[crlf]Connection: upgrade [crlf] Upgrade: websocket[crlf][crlf]"
+echo "GET / HTTP/1.1[crlf]Host: [host][crlf]Connection: upgrade [crlf] Upgrade: websocket[crlf][crlf]"
+
+read -rp "Press <Enter> to restart the server"
+reboot
