@@ -140,15 +140,15 @@ zerossl_setup() {
     process_echo "Disabling nodews1 proxy script to clear the port 80 temporary"
     #              curl https://get.acme.sh | sh -s email="$zerossl_email" --issue -d "$zerossl_domain" --standalone --server letsencrypt --staging --test
     #              cat ~/.acme.sh/"$zerossl_domain"/"$zerossl_domain".key ~/.acme.sh/"$zerossl_domain"/"$zerossl_domain" ~/.acme.sh/"$zerossl_domain"/fullchain.cer >/etc/stunnel/stunnel.pem
-
-    curl https://get.acme.sh | sh -s email="$zerossl_email" >/dev/null 2>&1 &
-    process_echo "Installing acme.sh..."
-    bash ~/.acme.sh/acme.sh --register-account -m "$zerossl_email" >/dev/null 2>&1 &
-    process_echo "Registering zerossl account..."
-    bash ~/.acme.sh/acme.sh --issue --standalone -d "$zerossl_domain" --force --staging --test >/dev/null 2>&1 &
-    process_echo "issuing standalone certificates..."
-    bash ~/.acme.sh/acme.sh --installcert -d "$zerossl_domain" --fullchainpath ./bundle.cer --keypath ./private.key >/dev/null 2>&1 &
-    process_echo "Installing certificates..."
+set -x
+    curl https://get.acme.sh | sh -s email="$zerossl_email"
+    #process_echo "Installing acme.sh..."
+    bash ~/.acme.sh/acme.sh --register-account -m "$zerossl_email"
+    #process_echo "Registering zerossl account..."
+    bash ~/.acme.sh/acme.sh --issue --standalone -d "$zerossl_domain" --force --staging --test
+    #process_echo "issuing standalone certificates..."
+    bash ~/.acme.sh/acme.sh --installcert -d "$zerossl_domain" --fullchainpath ./bundle.cer --keypath
+    #process_echo "Installing certificates..."
     cat ./private.key ./bundle.cer >/etc/stunnel/stunnel.pem
 
     systemctl start nodews1 2>&1 >/dev/null
@@ -208,7 +208,7 @@ process_echo "Downloading systemd unit file of nodejs proxy..." YELLOW
 mkdir /etc/p7common
 
 # proxy script
-wget -P /etc/p7common https://cdn.jsdelivr.net/gh/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install@main/proxy3.js 2>&1 &
+wget -P /etc/p7common https://gitlab.com/PANCHO7532/scripts-and-random-code/-/raw/master/nfree/proxy3.js 2>&1 &
 process_echo "Downloading nodejs proxy script..." YELLOW
 
 # enable startup and run service
@@ -216,7 +216,7 @@ systemctl enable --now nodews1.service >/dev/null 2>&1 &
 process_echo "Enabling and starting the service..." YELLOW
 
 # stunnel config listens on port 443
-wget -P /etc/stunnel/ https://gitlab.com/PANCHO7532/scripts-and-random-code/-/raw/master/nfree/stunnel.conf >/dev/null 2>&1 &
+wget -P /etc/stunnel/ https://cdn.jsdelivr.net/gh/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install@main/stunnel.conf >/dev/null 2>&1 &
 process_echo "Configuring stunnel..." YELLOW
 
 zerossl_setup
