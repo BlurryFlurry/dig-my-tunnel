@@ -84,6 +84,7 @@ build_install_badvpn() {
 zerossl_setup() {
   mkdir ../../certs
   cd ../../certs
+  local certs_dir=${PWD}
 
   TERMINAL=$(tty)
   HEIGHT=15
@@ -140,16 +141,16 @@ zerossl_setup() {
     process_echo "Disabling nodews1 proxy script to clear the port 80 temporary"
     #              curl https://get.acme.sh | sh -s email="$zerossl_email" --issue -d "$zerossl_domain" --standalone --server letsencrypt --staging --test
     #              cat ~/.acme.sh/"$zerossl_domain"/"$zerossl_domain".key ~/.acme.sh/"$zerossl_domain"/"$zerossl_domain" ~/.acme.sh/"$zerossl_domain"/fullchain.cer >/etc/stunnel/stunnel.pem
-set -x
-    curl https://get.acme.sh | sh -s email="$zerossl_email"
-    #process_echo "Installing acme.sh..."
-    bash ~/.acme.sh/acme.sh --register-account -m "$zerossl_email"
-    #process_echo "Registering zerossl account..."
-    bash ~/.acme.sh/acme.sh --issue --standalone -d "$zerossl_domain" --force --staging --test
-    #process_echo "issuing standalone certificates..."
-    bash ~/.acme.sh/acme.sh --installcert -d "$zerossl_domain" --fullchainpath ./bundle.cer --keypath
-    #process_echo "Installing certificates..."
-    cat ./private.key ./bundle.cer >/etc/stunnel/stunnel.pem
+
+    curl https://get.acme.sh | sh -s email="$zerossl_email" >/dev/null 2>&1 &
+    process_echo "Installing acme.sh..."
+    bash ~/.acme.sh/acme.sh --register-account -m "$zerossl_email" >/dev/null 2>&1 &
+    process_echo "Registering zerossl account..."
+    bash ~/.acme.sh/acme.sh --issue --standalone -d "$zerossl_domain" --force --staging --test >/dev/null 2>&1 &
+    process_echo "issuing standalone certificates..."
+    bash ~/.acme.sh/acme.sh --installcert -d "$zerossl_domain" --fullchainpath "$certs_dir"/bundle.cer --keypath "$certs_dir"/private.key >/dev/null 2>&1 &
+    process_echo "Installing certificates..."
+    cat "$certs_dir"/private.key "$certs_dir"/bundle.cer >/etc/stunnel/stunnel.pem
 
     systemctl start nodews1 2>&1 >/dev/null
     process_echo "Starting service nodews1 proxy script back online"
