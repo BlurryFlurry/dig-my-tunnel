@@ -151,7 +151,7 @@ zerossl_setup() {
     bash ~/.acme.sh/acme.sh --installcert -d "$zerossl_domain" --fullchainpath "$certs_dir"/bundle.cer --keypath "$certs_dir"/private.key >/dev/null 2>&1 &
     process_echo "Installing certificates..."
     cat "$certs_dir"/private.key "$certs_dir"/bundle.cer >/etc/stunnel/stunnel.pem
-    chmod 400 >/etc/stunnel/stunnel.pem
+    chmod 400 /etc/stunnel/stunnel.pem
 
     systemctl start nodews1 2>&1 >/dev/null
     process_echo "Starting service nodews1 proxy script back online"
@@ -263,7 +263,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "ssh_user  hard  maxlogins ${maxlogins}" >/etc/security/limits.d/"$ssh_user"
 fi
 
-# display payload creation from cloudfront url
+ display payload creation from cloudfront url
 read -p "Enter your cloudfront url: " clfurl
 clfurl=$(echo "$clfurl" | sed 's/https\?:\/\///')
 
@@ -271,6 +271,7 @@ clear
 echo "Payload:"
 echo ""
 echo "GET / HTTP/1.1[crlf]Host: ${clfurl}[crlf]Connection: upgrade [crlf] Upgrade: websocket[crlf][crlf]"
+echo "or"
 echo "GET / HTTP/1.1[crlf]Host: [host][crlf]Connection: upgrade [crlf] Upgrade: websocket[crlf][crlf]"
 
 read -rp "Press <Enter> to restart the server"
