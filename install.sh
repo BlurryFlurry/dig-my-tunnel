@@ -263,7 +263,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "ssh_user  hard  maxlogins ${maxlogins}" >/etc/security/limits.d/"$ssh_user"
 fi
 
- display payload creation from cloudfront url
+# display payload creation from cloudfront url
 read -p "Enter your cloudfront url: " clfurl
 clfurl=$(echo "$clfurl" | sed 's/https\?:\/\///')
 
