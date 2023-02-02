@@ -146,7 +146,8 @@ zerossl_setup() {
     process_echo "Installing acme.sh..."
     bash ~/.acme.sh/acme.sh --register-account -m "$zerossl_email" >/dev/null 2>&1 &
     process_echo "Registering zerossl account..."
-    bash ~/.acme.sh/acme.sh --issue --standalone -d "$zerossl_domain" --force --staging --test >/dev/null 2>&1 &
+#    bash ~/.acme.sh/acme.sh --issue --standalone -d "$zerossl_domain" --force --staging --test >/dev/null 2>&1 &
+    bash ~/.acme.sh/acme.sh --issue --standalone -d "$zerossl_domain" --force >/dev/null 2>&1 &
     process_echo "issuing standalone certificates..."
     bash ~/.acme.sh/acme.sh --installcert -d "$zerossl_domain" --fullchainpath "$certs_dir"/bundle.cer --keypath "$certs_dir"/private.key >/dev/null 2>&1 &
     process_echo "Installing certificates..."
@@ -264,14 +265,14 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 # display payload creation from cloudfront url
-read -p "Enter your cloudfront url: " clfurl
-clfurl=$(echo "$clfurl" | sed 's/https\?:\/\///')
+#read -p "Enter your cloudfront url: " clfurl
+#clfurl=$(echo "$clfurl" | sed 's/https\?:\/\///')
 
-clear
-echo "Payload:"
-echo ""
-echo "GET / HTTP/1.1[crlf]Host: ${clfurl}[crlf]Connection: upgrade [crlf] Upgrade: websocket[crlf][crlf]"
-echo "or"
+#clear
+#echo "Payload:"
+#echo ""
+#echo "GET / HTTP/1.1[crlf]Host: ${clfurl}[crlf]Connection: upgrade [crlf] Upgrade: websocket[crlf][crlf]"
+#echo "or"
 echo "GET / HTTP/1.1[crlf]Host: [host][crlf]Connection: upgrade [crlf] Upgrade: websocket[crlf][crlf]"
 
 read -rp "Press <Enter> to restart the server"
