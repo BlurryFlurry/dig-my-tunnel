@@ -261,7 +261,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     sleep 1
   done
   read -p "Max logins limit: " maxlogins
-  echo "ssh_user  hard  maxlogins ${maxlogins}" >/etc/security/limits.d/"$ssh_user"
+  echo "$ssh_user  hard  maxlogins ${maxlogins}" >/etc/security/limits.d/"$ssh_user"
 fi
 
 # display payload creation from cloudfront url
