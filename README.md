@@ -4,6 +4,7 @@
 apt-get install curl -y && bash <(curl https://cdn.jsdelivr.net/gh/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install@main/install.sh)
 ````
 
+(Tested on ubuntu 20.0)
 
 Nodejs proxy script credits goes to [@PANCHO7532](https://gitlab.com/PANCHO7532)
 
