@@ -174,6 +174,8 @@ zerossl_setup() {
 #######                                                                     ###########
 #######################################################################################
 
+ufw disable || echo "ufw is not found. Continuing.."
+
 # install updates
 
 apt update -qq -y >/dev/null 2>&1 &
