@@ -1,5 +1,10 @@
 # Dropbear Squid Stunnel Nodejs Proxy Badvpn auto installer
 
+### Description:
+This script helps you to install packages: Dropbear Squid Stunnel Nodejs Proxy Badvpn and configure automatically for tunneling purpose.
+The target of this script is install only the minimum packages to reduce the processor usage, and prevent the server from slowing down and allow keep everything up and running on even servers that has very minimal resources.
+
+
 Installation command: (read the instructions below before you execute this command)
 ```
 apt-get install curl -y && bash <(curl https://cdn.jsdelivr.net/gh/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install@main/install.sh)
