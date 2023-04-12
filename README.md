@@ -20,7 +20,7 @@ apt-get install curl -y && bash <(curl https://cdn.jsdelivr.net/gh/BlurryFlurry/
 
 ProTip: Execute this script on tmux session, (in case you have a laggy internet connection)
 
-**I am not responsible for any kind of damage that happen to your server after the script got executed. If you found a bug, Fix it your self and make a pull request or open an issue.**
+**I am not responsible for any kind of damage that happen to your server after you use this script, so you should be able to rebuild your vps/server in case anything go wrong. If you found a bug, Fix it your self and make a pull request or open an issue.**
 
 Nodejs proxy script credits goes to [@PANCHO7532](https://gitlab.com/PANCHO7532)
 
