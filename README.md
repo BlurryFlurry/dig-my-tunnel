@@ -9,6 +9,7 @@ apt-get install curl -y && bash <(curl https://cdn.jsdelivr.net/gh/BlurryFlurry/
 
 - I've only tested this script on Ubuntu 20.04 LTS.
 - Install updates and upgrade first with command:`sudo apt update -y && apt upgrade -y`and wait for completing the process.
+- Port 80 must be free to use. If you have no idea how to check if the port 80 is busy or make it free: try this command: `sudo apt install nodejs npm -y && npx kill-port 80` <br> and verify it by this command: `ss -ntlp | grep ':80 '` <- if this command give you any output, it means port 80 is busy, you must make that process stop before you continue, if it does not give you any output, it means port 80 is free, you are good to proceed..
 - You should have your own domain/subdomain pointed to the IP address of your vps/server/instance with an "A" record. 
 - If you don't have a domain name, you can use cloudns.com or https://freenet.cafe websites. This is a requirement for the SSL certificate-generating process for Stunnel.
 - Tip: When you are at generating the SSL certificate process, You should note, it's easier if you select acme.sh automation, and it will save a lot of time because you will not have to go through the zerossl certificate site and create accounts and verify your domain, acme.sh option will automatically do it for you.
