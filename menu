@@ -1,0 +1,65 @@
+#!/bin/bash
+
+start_telegram_bot() {
+  if systemctl is-active --quiet ptb.service; then
+    echo "Telegram bot is running, Are you sure you want to stop it? [y/n]"
+    read -r choice
+    case $choice in
+      y|Y) sudo systemctl stop ptb.service;;
+      *) echo "Aborted."; return;;
+    esac
+  else
+    echo "Starting Telegram bot..."
+    sudo systemctl start ptb.service
+  fi
+}
+
+create_ssh_user() {
+  read -p "Username: " username
+  read -p "Password: " password
+
+  # Set default values for max_sessions and days
+  default_max_sessions=5
+  default_days=30
+
+  read -p "Maximum concurrent SSH sessions [default: $default_max_sessions]: " max_sessions
+  max_sessions=${max_sessions:-$default_max_sessions}
+
+  read -p "How many days you need this account from today [default: $default_days]: " days
+  days=${days:-$default_days}
+
+  useradd -M -s /sbin/nologin -e $(date -d "+$days days" +%Y-%m-%d) $username
+  echo "$username:$password" | chpasswd
+
+  # Add limit for maximum concurrent SSH sessions
+  echo "$username hard maxlogins $max_sessions" | sudo tee -a /etc/security/limits.conf > /dev/null
+}
+
+show_menu() {
+
+  while true; do
+  ptb_status=$(systemctl is-active ptb.service)
+  ptb_action="Start"
+  if [ "$ptb_status" = "active" ]; then
+    ptb_action="Stop"
+  fi
+  clear
+  echo "----------------------------------"
+  echo "              MENU                "
+  echo "----------------------------------"
+  echo "1. $ptb_action Telegram bot"
+  echo "2. Create SSH User"
+  echo "3. Exit"
+  echo "----------------------------------"
+  echo "Enter a number:"
+  read -r choice
+    case $choice in
+      1) start_telegram_bot;;
+      2) create_ssh_user;;
+      3) break;;
+      *) echo "Invalid option, please choose again.";;
+    esac
+  done
+}
+
+show_menu
