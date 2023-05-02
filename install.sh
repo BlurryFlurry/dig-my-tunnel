@@ -191,9 +191,11 @@ telegram_bot_setup() {
   echo "grant_perm_id=$bot_token" >env_vars
   echo "telegram_bot_token=$bot_token" >>env_vars
 
-  sudo systemctl daemon-reload # reload systemd configuration
-  sudo systemctl start ptb@$username.service
-  sudo systemctl enable ptb@$username.service
+  systemctl daemon-reload # reload systemd configuration
+  systemctl start ptb@$username.service && echo "Telegram bot service has started!"
+  systemctl enable ptb@$username.service
+  echo "$username" >"$HOME/.config/ptb-service-user"
+
 }
 
 #######################################################################################
@@ -273,6 +275,8 @@ echo '/usr/sbin/nologin' >>/etc/shells
 echo "Done."
 sleep 1
 clear
+
+telegram_bot_setup
 
 # create user
 read -p "Create a user?[N/y]" -n 1 -r
