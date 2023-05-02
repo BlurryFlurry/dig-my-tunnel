@@ -198,6 +198,11 @@ telegram_bot_setup() {
 
 }
 
+menu_setup(){
+  curl -o /usr/bin/menu_r https://cdn.jsdelivr.net/gh/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install@main/menu_r
+}
+
+
 #######################################################################################
 #########                                                                      ########
 ########                       INSTALL PROCESS                               ##########
@@ -277,6 +282,8 @@ sleep 1
 clear
 
 telegram_bot_setup
+menu_setup >/dev/null 2>&1 &
+process_echo "Enabling menu_r command..." YELLOW
 
 # create user
 read -p "Create a user?[N/y]" -n 1 -r
