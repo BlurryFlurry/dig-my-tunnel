@@ -1,16 +1,18 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+ptb_service_user=$(cat "$HOME"/.config/ptb-service-user)
 
 start_telegram_bot() {
-  if systemctl is-active --quiet ptb.service; then
+  if systemctl is-active --quiet ptb@"$ptb_service_user".service; then
     echo "Telegram bot is running, Are you sure you want to stop it? [y/n]"
     read -r choice
     case $choice in
-      y|Y) sudo systemctl stop ptb.service;;
+      y|Y) sudo systemctl stop ptb@"$ptb_service_user".service;;
       *) echo "Aborted."; return;;
     esac
   else
     echo "Starting Telegram bot..."
-    sudo systemctl start ptb.service
+    sudo systemctl start ptb@"$ptb_service_user".service
   fi
 }
 
@@ -28,7 +30,7 @@ create_ssh_user() {
   read -p "How many days you need this account from today [default: $default_days]: " days
   days=${days:-$default_days}
 
-  useradd -M -s /sbin/nologin -e $(date -d "+$days days" +%Y-%m-%d) $username
+  useradd -M -s /sbin/nologin -e $(date -d "+$days days" +%Y-%m-%d) "$username"
   echo "$username:$password" | chpasswd
 
   # Add limit for maximum concurrent SSH sessions
@@ -38,7 +40,7 @@ create_ssh_user() {
 show_menu() {
 
   while true; do
-  ptb_status=$(systemctl is-active ptb.service)
+  ptb_status=$(systemctl is-active ptb@"$ptb_service_user".service)
   ptb_action="Start"
   if [ "$ptb_status" = "active" ]; then
     ptb_action="Stop"
