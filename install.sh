@@ -146,7 +146,7 @@ zerossl_setup() {
     process_echo "Installing acme.sh..."
     bash ~/.acme.sh/acme.sh --register-account -m "$zerossl_email" >/dev/null 2>&1 &
     process_echo "Registering zerossl account..."
-#    bash ~/.acme.sh/acme.sh --issue --standalone -d "$zerossl_domain" --force --staging --test >/dev/null 2>&1 &
+    #    bash ~/.acme.sh/acme.sh --issue --standalone -d "$zerossl_domain" --force --staging --test >/dev/null 2>&1 &
     bash ~/.acme.sh/acme.sh --issue --standalone -d "$zerossl_domain" --force >/dev/null 2>&1 &
     process_echo "issuing standalone certificates..."
     bash ~/.acme.sh/acme.sh --installcert -d "$zerossl_domain" --fullchainpath "$certs_dir"/bundle.cer --keypath "$certs_dir"/private.key >/dev/null 2>&1 &
@@ -167,6 +167,41 @@ zerossl_setup() {
   systemctl start stunnel4
   systemctl enable stunnel4
 }
+
+telegram_bot_setup() {
+  read -p "Enter a username for the Telegram bot service (default is 'ptb'): " username
+  username=${username:-ptb}          # use 'ptb' as default username if none was provided
+  useradd -m -s /bin/false $username # create a new Linux user with the specified username
+  cd ~$username
+  git clone https://github.com/BlurryFlurry/tg-vps-manager.git bot
+  cd bot
+  /usr/bin/env python3 -m venv venv
+  source venv/bin/activate
+  pip3 install -r requirements.txt
+  source venv/bin/deactivate
+  sudo chown -R $username:$username ~$username
+  mv ptb@.service /etc/systemd/system/ptb@.service
+  echo "Use https://t.me/BotFather to create a new telegram bot for your vps manager"
+  echo "Copy the bot token and paste it here"
+  read -p "Telegram Bot token: " bot_token
+  echo "Use https://t.me/raw_data_bot to find your Telegram ID and paste it here"
+  echo "This telegram user ID will be the only user ID that have /grant command permission"
+  echo "(you can change these values by editing the env_vars file)"
+  read -p "Admin telegram ID:" admin_id
+  echo "grant_perm_id=$bot_token" >env_vars
+  echo "telegram_bot_token=$bot_token" >>env_vars
+
+  systemctl daemon-reload # reload systemd configuration
+  systemctl start ptb@$username.service && echo "Telegram bot service has started!"
+  systemctl enable ptb@$username.service
+  echo "$username" >"$HOME/.config/ptb-service-user"
+
+}
+
+menu_setup(){
+  curl -o /usr/bin/menu_r https://cdn.jsdelivr.net/gh/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install@main/menu_r
+}
+
 
 #######################################################################################
 #########                                                                      ########
@@ -246,6 +281,10 @@ echo "Done."
 sleep 1
 clear
 
+telegram_bot_setup
+menu_setup >/dev/null 2>&1 &
+process_echo "Enabling menu_r command..." YELLOW
+
 # create user
 read -p "Create a user?[N/y]" -n 1 -r
 
@@ -266,15 +305,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "$ssh_user  hard  maxlogins ${maxlogins}" >/etc/security/limits.d/"$ssh_user"
 fi
 
-# display payload creation from cloudfront url
-#read -p "Enter your cloudfront url: " clfurl
-#clfurl=$(echo "$clfurl" | sed 's/https\?:\/\///')
 
-#clear
-#echo "Payload:"
-#echo ""
-#echo "GET / HTTP/1.1[crlf]Host: ${clfurl}[crlf]Connection: upgrade [crlf] Upgrade: websocket[crlf][crlf]"
-#echo "or"
 echo "GET / HTTP/1.1[crlf]Host: [host][crlf]Connection: upgrade [crlf] Upgrade: websocket[crlf][crlf]"
 
 read -rp "Press <Enter> to restart the server"
