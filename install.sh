@@ -172,14 +172,17 @@ telegram_bot_setup() {
   read -p "Enter a username for the Telegram bot service (default is 'ptb'): " username
   username=${username:-ptb}          # use 'ptb' as default username if none was provided
   useradd -m -s /bin/false $username # create a new Linux user with the specified username
-  cd ~$username
-  git clone https://github.com/BlurryFlurry/tg-vps-manager.git bot
+  cd /home/$username
+  git clone https://github.com/BlurryFlurry/tg-vps-manager.git bot 2>&1 &
+  process_echo "Cloning repository to /home/$username/bot ..." YELLOW
   cd bot
   /usr/bin/env python3 -m venv venv
   source venv/bin/activate
-  pip3 install -r requirements.txt
-  source venv/bin/deactivate
-  sudo chown -R $username:$username ~$username
+  pip3 install wheel
+  pip3 install -r requirements.txt 2>&1 &
+  process_echo "Installing requirements..." YELLOW
+  deactivate
+  sudo chown -R $username:$username /home/$username
   mv ptb@.service /etc/systemd/system/ptb@.service
   echo "Use https://t.me/BotFather to create a new telegram bot for your vps manager"
   echo "Copy the bot token and paste it here"
@@ -187,13 +190,13 @@ telegram_bot_setup() {
   echo "Use https://t.me/raw_data_bot to find your Telegram ID and paste it here"
   echo "This telegram user ID will be the only user ID that have /grant command permission"
   echo "(you can change these values by editing the env_vars file)"
-  read -p "Admin telegram ID:" admin_id
-  echo "grant_perm_id=$bot_token" >env_vars
+  read -p "Admin telegram ID: " admin_id
+  echo "grant_perm_id=$admin_id" >env_vars
   echo "telegram_bot_token=$bot_token" >>env_vars
 
   systemctl daemon-reload # reload systemd configuration
   systemctl start ptb@$username.service && echo "Telegram bot service has started!"
-  systemctl enable ptb@$username.service
+  systemctl enable ptb@$username.service 2>&1 
   echo "$username" >"$HOME/.config/ptb-service-user"
 
 }
