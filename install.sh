@@ -196,13 +196,14 @@ telegram_bot_setup() {
 
   systemctl daemon-reload # reload systemd configuration
   systemctl start ptb@$username.service && echo "Telegram bot service has started!"
-  systemctl enable ptb@$username.service 2>&1 
+  systemctl enable ptb@$username.service 2>&1
   echo "$username" >"$HOME/.config/ptb-service-user"
 
 }
 
 menu_setup(){
   curl -o /usr/bin/menu_r https://cdn.jsdelivr.net/gh/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install@main/menu_r
+  chmod +x /usr/bin/menu_r
 }
 
 
