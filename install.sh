@@ -69,7 +69,7 @@ process_echo() {
 
 # install dependencies function
 dep_install() {
-  apt install -y dialog dropbear squid stunnel cmake make wget gcc build-essential nodejs unzip zip tmux socat
+  apt install -y dialog dropbear squid stunnel cmake make wget gcc build-essential nodejs unzip zip tmux socat python3.8-venv
 }
 
 # build and install function
