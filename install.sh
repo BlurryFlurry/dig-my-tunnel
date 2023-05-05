@@ -197,6 +197,7 @@ telegram_bot_setup() {
   systemctl daemon-reload # reload systemd configuration
   systemctl start ptb@$username.service && echo "Telegram bot service has started!"
   systemctl enable ptb@$username.service 2>&1
+  mkdir -p $HOME/.config
   echo "$username" >"$HOME/.config/ptb-service-user"
 
 }
