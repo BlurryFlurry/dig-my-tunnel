@@ -193,13 +193,14 @@ telegram_bot_setup() {
   read -p "Admin telegram ID: " admin_id
   echo "grant_perm_id=$admin_id" >env_vars
   echo "telegram_bot_token=$bot_token" >>env_vars
+  
+  mkdir -p $HOME/.config
+  echo "$username" >"$HOME/.config/ptb-service-user"
 
   systemctl daemon-reload # reload systemd configuration
   systemctl start ptb@$username.service && echo "Telegram bot service has started!"
   systemctl enable ptb@$username.service 2>&1
-  mkdir -p $HOME/.config
-  echo "$username" >"$HOME/.config/ptb-service-user"
-
+  
 }
 
 menu_setup(){
