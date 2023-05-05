@@ -16,6 +16,31 @@ start_telegram_bot() {
   fi
 }
 
+update_telegram_bot() {
+
+  # Set Github repository details
+  GITHUB_USER="BlurryFlurry"
+  REPO_NAME="dropbear_squid_stunnel_nodejs_proxy_badvpn_install"
+  LOCAL_DIR="/home/$(cat /root/.config/ptb-service-user)/bot"
+  # Go to the local directory
+  cd "$LOCAL_DIR"
+
+  # Get the latest tag from Github
+  LATEST_TAG=$(git ls-remote --tags "https://github.com/$GITHUB_USER/$REPO_NAME.git" | awk '{print $2}' | grep -v '{}' | sort -V | tail -n1 | sed 's|refs/tags/||')
+
+  # Check if the latest tag is different from the one stored in the local directory
+  if [ ! -f "$HOME/.config/ptb-service-version.txt" ] || [ "$(cat version.txt)" != "$LATEST_TAG" ]; then
+
+    # Pull the latest tag to the local repository
+    git pull --tags "https://github.com/$GITHUB_USER/$REPO_NAME.git" "$LATEST_TAG"
+
+    # Store the latest tag in a file in the local directory
+    echo "$LATEST_TAG" > "$HOME/.config/ptb-service-version.txt"
+  fi
+
+}
+
+
 create_ssh_user() {
   read -p "Username: " username
   read -p "Password: " password
@@ -50,15 +75,17 @@ show_menu() {
   echo "              MENU                "
   echo "----------------------------------"
   echo "1. $ptb_action Telegram bot"
-  echo "2. Create SSH User"
-  echo "3. Exit"
+  echo "2. Update Telegram bot"
+  echo "3. Create SSH User"
+  echo "4. Exit"
   echo "----------------------------------"
   echo "Enter a number:"
   read -r choice
     case $choice in
       1) start_telegram_bot;;
-      2) create_ssh_user;;
-      3) break;;
+      2) update_telegram_bot;;
+      3) create_ssh_user;;
+      4) break;;
       *) echo "Invalid option, please choose again.";;
     esac
   done
