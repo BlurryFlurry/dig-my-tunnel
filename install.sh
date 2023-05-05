@@ -196,8 +196,9 @@ telegram_bot_setup() {
   
   mkdir -p $HOME/.config
   echo "$username" >"$HOME/.config/ptb-service-user"
-  touch /var/log/ptb.log
-  chown $username:$username /var/log/$username.log
+  logfile=/var/log/$username.log
+  touch $logfile
+  chown $username:$username $logfile
   echo "$username ALL=(ALL) NOPASSWD:/usr/sbin/reboot, /usr/sbin/useradd" | sudo tee /etc/sudoers.d/$username-commands > /dev/null
 
   systemctl daemon-reload # reload systemd configuration
