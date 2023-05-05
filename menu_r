@@ -20,7 +20,7 @@ update_telegram_bot() {
 
   # Set Github repository details
   GITHUB_USER="BlurryFlurry"
-  REPO_NAME="dropbear_squid_stunnel_nodejs_proxy_badvpn_install"
+  REPO_NAME="tg-vps-manager"
   LOCAL_DIR="/home/$(cat /root/.config/ptb-service-user)/bot"
   # Go to the local directory
   cd "$LOCAL_DIR"
