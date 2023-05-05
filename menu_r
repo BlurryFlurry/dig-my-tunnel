@@ -30,7 +30,7 @@ create_ssh_user() {
   read -p "How many days you need this account from today [default: $default_days]: " days
   days=${days:-$default_days}
 
-  useradd -M -s /sbin/nologin -e $(date -d "+$days days" +%Y-%m-%d) "$username"
+  useradd -M -s /usr/sbin/nologin -e $(date -d "+$days days" +%Y-%m-%d) "$username"
   echo "$username:$password" | chpasswd
 
   # Add limit for maximum concurrent SSH sessions
