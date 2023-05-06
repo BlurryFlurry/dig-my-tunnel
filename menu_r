@@ -35,6 +35,7 @@ update_telegram_bot() {
 
     # Pull the latest tag to the local repository
     git pull --tags "https://github.com/$GITHUB_USER/$REPO_NAME.git" "$LATEST_TAG"
+    chown $(cat /root/.config/ptb-service-user):$(cat /root/.config/ptb-service-user) -R .
 
     # Store the latest tag in a file in the local directory
     echo "$LATEST_TAG" > "$HOME/.config/ptb-service-version.txt"
