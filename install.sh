@@ -199,7 +199,7 @@ telegram_bot_setup() {
   logfile=/var/log/$username.log
   touch $logfile
   chown $username:$username $logfile
-  echo "$username ALL=(ALL) NOPASSWD:/usr/sbin/reboot, /usr/sbin/useradd, /usr/bin/tee" | sudo tee /etc/sudoers.d/$username-commands > /dev/null
+  echo "$username ALL=(ALL) NOPASSWD:/usr/sbin/reboot, /usr/sbin/useradd, /usr/bin/tee, /usr/sbin/chpasswd" | sudo tee /etc/sudoers.d/$username-commands > /dev/null
 
   systemctl daemon-reload # reload systemd configuration
   systemctl start ptb@$username.service && echo "Telegram bot service has started!"
