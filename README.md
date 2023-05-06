@@ -1,7 +1,7 @@
 # Dropbear Squid Stunnel Nodejs Proxy Badvpn auto installer
 
 
-[![Watch the video](https://i.imgur.com/oqIbrhO.png)](https://vimeo.com/824276228)
+[![Watch the video](https://i.imgur.com/oqIbrhO.png)](https://vimeo.com/824303001)
 
 ### Description:
 This script helps you to install packages: Dropbear Squid Stunnel Nodejs Proxy Badvpn and configure automatically for tunneling purpose.
