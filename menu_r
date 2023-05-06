@@ -24,7 +24,9 @@ update_telegram_bot() {
   LOCAL_DIR="/home/$(cat /root/.config/ptb-service-user)/bot"
   # Go to the local directory
   cd "$LOCAL_DIR"
-
+  
+  
+  touch $HOME/.config/ptb-service-version.txt
   # Get the latest tag from Github
   LATEST_TAG=$(git ls-remote --tags "https://github.com/$GITHUB_USER/$REPO_NAME.git" | awk '{print $2}' | grep -v '{}' | sort -V | tail -n1 | sed 's|refs/tags/||')
 
