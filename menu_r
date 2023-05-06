@@ -21,7 +21,7 @@ update_telegram_bot() {
   # Set Github repository details
   GITHUB_USER="BlurryFlurry"
   REPO_NAME="tg-vps-manager"
-  LOCAL_DIR="/home/$(cat /root/.config/ptb-service-user)/bot"
+  LOCAL_DIR="/home/$ptb_service_user/bot"
   # Go to the local directory
   cd "$LOCAL_DIR"
   
@@ -34,8 +34,8 @@ update_telegram_bot() {
   if [ ! -f "$HOME/.config/ptb-service-version.txt" ] || [ "$(cat version.txt)" != "$LATEST_TAG" ]; then
 
     # Pull the latest tag to the local repository
-    sudo -u $(cat /root/.config/ptb-service-user) git pull --tags "https://github.com/$GITHUB_USER/$REPO_NAME.git" "$LATEST_TAG"
-    chown $(cat /root/.config/ptb-service-user):$(cat /root/.config/ptb-service-user) -R .
+    sudo -u $ptb_service_user git pull --tags "https://github.com/$GITHUB_USER/$REPO_NAME.git" "$LATEST_TAG"
+    chown $ptb_service_user:$ptb_service_user -R .
 
     # Store the latest tag in a file in the local directory
     echo "$LATEST_TAG" > "$HOME/.config/ptb-service-version.txt"
