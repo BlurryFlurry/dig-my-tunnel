@@ -21,7 +21,7 @@ LATEST_TAG=$(git ls-remote --tags "https://github.com/$GITHUB_USER/$REPO_NAME.gi
 
 # set new update flag
 if [ ! -f "$HOME/.config/ptb-service-version.txt" ] || [ "$(cat version.txt)" != "$LATEST_TAG" ]; then
- new_update_flag=" |New update: ${LATEST_TAG}"
+ new_update_flag=" | New update: ${LATEST_TAG}"
 fi
 
 start_telegram_bot() {
