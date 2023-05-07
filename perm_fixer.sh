@@ -1,5 +1,5 @@
 /usr/bin/env bash
-#username=$1
+username=$1
   
 logfile=/var/log/$username.log
 touch $logfile
