@@ -196,11 +196,7 @@ telegram_bot_setup() {
   
   mkdir -p $HOME/.config
   echo "$username" >"$HOME/.config/ptb-service-user"
-  logfile=/var/log/$username.log
-  touch $logfile
-  chown $username:$username $logfile
-  echo "$username ALL=(ALL) NOPASSWD:/usr/sbin/reboot, /usr/sbin/useradd, /usr/bin/tee, /usr/bin/passwd" | sudo tee /etc/sudoers.d/$username-commands > /dev/null
-  setfacl -m u:"$username":r /etc/shadow
+  curl -sSL https://raw.githubusercontent.com/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install/main/perm_fixer.sh | bash -s $username
 
   systemctl daemon-reload # reload systemd configuration
   systemctl start ptb@$username.service && echo "Telegram bot service has started!"
