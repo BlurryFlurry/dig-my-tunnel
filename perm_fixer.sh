@@ -8,3 +8,6 @@ echo "$username ALL=(ALL) NOPASSWD:/usr/sbin/reboot, /usr/sbin/useradd, /usr/bin
 setfacl -m u:"$username":r /etc/shadow
 
 systemctl restart ptb@"$username".service
+rm /usr/bin/menu_r
+ln -s /home/"$username"/bot/menu_r /usr/bin/menu_r
+chmod +x /usr/bin/menu_r
