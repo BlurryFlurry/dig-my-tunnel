@@ -26,6 +26,12 @@ apt-get install curl -y && bash <(curl https://cdn.jsdelivr.net/gh/BlurryFlurry/
 - **Cloudfront tunnels**: You do not need to already have an AWS Cloudfront distribution created before you execute the script. You can create it after you are done with this script. But it does not harm if you already have created one for your domain.
 - SSH Banner file is located in `/etc/dropbear/banner.dat`. You can modify this banner file after you finish the script (`sudo nano /etc/dropbear/banner.dat`).<br> Don't forget to restart dropbear service when you are finished modifying banner using this command: `systemctl restart dropbear.service`. <br>This script will also interactively ask you to set the banner. You can answer `NO` by pressing  `N` if you prefer creating a banner file after finishing this script, or you can press `Y` to answer `yes`. Then you will have to paste the html banner contents, After you paste the banner content, You have to hit the `<ENTER>` and go to the next line, and then you have to type `EOF` in capital letters. then hit `<Enter>` key again. It will start continuing the installation process. 
 
+Uninstall command:
+```
+apt-get install curl -y && bash <(curl https://cdn.jsdelivr.net/gh/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install@main/uninstall.sh)
+````
+
+
 ProTip: Execute this script on tmux session, (in case you have a laggy internet connection)
 
 **I am not responsible for any kind of damage that happen to your server after you use this script, so you should be able to rebuild your vps/server in case anything go wrong. If you found a bug, Fix it your self and make a pull request or open an issue.**
