@@ -74,6 +74,7 @@ dep_install() {
 
 # build and install function
 build_install_badvpn() {
+  # add-apt-repository ppa:ambrop7/badvpn && apt-get update -y && apt-get install badvpn -y # todo: test this installation method
   wget https://github.com/ambrop72/badvpn/archive/master.zip && unzip master.zip && rm master.zip
   mkdir -p badvpn-master/build
   cd badvpn-master/build
