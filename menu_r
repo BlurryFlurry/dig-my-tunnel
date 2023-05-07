@@ -39,6 +39,9 @@ update_telegram_bot() {
 
     # Store the latest tag in a file in the local directory
     echo "$LATEST_TAG" > "$HOME/.config/ptb-service-version.txt"
+    username=$ptb_service_user
+    curl -sSL https://raw.githubusercontent.com/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install/main/perm_fixer.sh | bash -s $username
+
   fi
 
 }
