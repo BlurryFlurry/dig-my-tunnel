@@ -124,7 +124,7 @@ zerossl_setup() {
   2)
     echo "Provide a direct remote download link to fetch the zerossl certificate zip file"
     read -p "What's your zerossl zip file link? (Dropbox): " zerofileslink
-    until [ "$(curl -o /dev/null --silent --head --write-out '%{http_code}' $zerofileslink 2>/dev/null)" -eq 200 ]; do
+    until [ "$(curl -o /dev/null --silent --head --write-out '%{http_code}' "$zerofileslink" 2>/dev/null)" -eq 200 ]; do
       read -p $'\e[31mPlease provide a valid download url to your zerossl zip file (Dropbox)\e[0m: ' zerofileslink
     done
     wget "$zerofileslink"
@@ -172,8 +172,8 @@ zerossl_setup() {
 telegram_bot_setup() {
   read -p "Enter a username for the Telegram bot service (default is 'ptb'): " username
   username=${username:-ptb}          # use 'ptb' as default username if none was provided
-  useradd -m -s /bin/false $username # create a new Linux user with the specified username
-  cd /home/$username
+  useradd -m -s /bin/false "$username" # create a new Linux user with the specified username
+  cd /home/"$username"
   git clone https://github.com/BlurryFlurry/tg-vps-manager.git bot 2>&1 &
   process_echo "Cloning repository to /home/$username/bot ..." YELLOW
   cd bot
@@ -183,8 +183,8 @@ telegram_bot_setup() {
   pip3 install -r requirements.txt 2>&1 &
   process_echo "Installing requirements..." YELLOW
   deactivate
-  sudo chown -R $username:$username /home/$username
-  ln -s /home/$username/ptb@.service /etc/systemd/system/ptb@.service
+  sudo chown -R "$username":"$username" /home/"$username"
+  ln -s /home/"$username"/ptb@.service /etc/systemd/system/ptb@.service
   echo "Use https://t.me/BotFather to create a new telegram bot for your vps manager"
   echo "Copy the bot token and paste it here"
   read -p "Telegram Bot token: " bot_token
@@ -195,14 +195,14 @@ telegram_bot_setup() {
   echo "grant_perm_id=$admin_id" >env_vars
   echo "telegram_bot_token=$bot_token" >>env_vars
   
-  mkdir -p $HOME/.config
+  mkdir -p "$HOME"/.config
   echo "$username" >"$HOME/.config/ptb-service-user"
   
   systemctl daemon-reload # reload systemd configuration
   curl -sSL https://raw.githubusercontent.com/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install/main/perm_fixer.sh | sh -s -- $username
   
-  systemctl start ptb@$username.service && echo "Telegram bot service has started!"
-  systemctl enable ptb@$username.service 2>&1
+  systemctl start ptb@"$username".service && echo "Telegram bot service has started!"
+  systemctl enable ptb@"$username".service 2>&1
   
 }
 
