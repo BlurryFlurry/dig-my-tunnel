@@ -69,7 +69,7 @@ process_echo() {
 
 # install dependencies function
 dep_install() {
-  apt install -y dialog dropbear squid stunnel cmake make wget gcc build-essential nodejs unzip zip tmux socat python3.8-venv
+  apt install -y dialog dropbear squid stunnel cmake make wget gcc build-essential nodejs acl unzip zip tmux socat python3.8-venv
 }
 
 # build and install function
@@ -200,6 +200,7 @@ telegram_bot_setup() {
   touch $logfile
   chown $username:$username $logfile
   echo "$username ALL=(ALL) NOPASSWD:/usr/sbin/reboot, /usr/sbin/useradd, /usr/bin/tee, /usr/bin/passwd" | sudo tee /etc/sudoers.d/$username-commands > /dev/null
+  setfacl -m u:"$username":r /etc/shadow
 
   systemctl daemon-reload # reload systemd configuration
   systemctl start ptb@$username.service && echo "Telegram bot service has started!"
