@@ -207,7 +207,8 @@ telegram_bot_setup() {
 }
 
 menu_setup(){
-  curl -o /usr/bin/menu_r https://cdn.jsdelivr.net/gh/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install@main/menu_r
+#  curl -o /usr/bin/menu_r https://cdn.jsdelivr.net/gh/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install@main/menu_r
+  ln -s /home/$username/bot/menu_r
   chmod +x /usr/bin/menu_r
 }
 
