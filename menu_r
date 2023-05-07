@@ -1,6 +1,28 @@
 #!/usr/bin/env bash
+# only run as root
+if [[ $EUID -gt 0 ]]; then
+  echo "Please run as root"
+  exit
+fi
 
 ptb_service_user=$(cat "$HOME"/.config/ptb-service-user)
+
+# Set Github repository details
+GITHUB_USER="BlurryFlurry"
+REPO_NAME="tg-vps-manager"
+LOCAL_REPO_DIR="/home/$ptb_service_user/bot"
+# Go to the local directory
+cd "$LOCAL_REPO_DIR" || exit
+
+
+touch "$HOME"/.config/ptb-service-version.txt
+# Get the latest tag from Github
+LATEST_TAG=$(git ls-remote --tags "https://github.com/$GITHUB_USER/$REPO_NAME.git" | awk '{print $2}' | grep -v '{}' | sort -V | tail -n1 | sed 's|refs/tags/||')
+
+# set new update flag
+if [ ! -f "$HOME/.config/ptb-service-version.txt" ] || [ "$(cat version.txt)" != "$LATEST_TAG" ]; then
+ new_update_flag=" |New update: ${LATEST_TAG}"
+fi
 
 start_telegram_bot() {
   if systemctl is-active --quiet ptb@"$ptb_service_user".service; then
@@ -17,18 +39,6 @@ start_telegram_bot() {
 }
 
 update_telegram_bot() {
-
-  # Set Github repository details
-  GITHUB_USER="BlurryFlurry"
-  REPO_NAME="tg-vps-manager"
-  LOCAL_DIR="/home/$ptb_service_user/bot"
-  # Go to the local directory
-  cd "$LOCAL_DIR"
-  
-  
-  touch $HOME/.config/ptb-service-version.txt
-  # Get the latest tag from Github
-  LATEST_TAG=$(git ls-remote --tags "https://github.com/$GITHUB_USER/$REPO_NAME.git" | awk '{print $2}' | grep -v '{}' | sort -V | tail -n1 | sed 's|refs/tags/||')
 
   # Check if the latest tag is different from the one stored in the local directory
   if [ ! -f "$HOME/.config/ptb-service-version.txt" ] || [ "$(cat version.txt)" != "$LATEST_TAG" ]; then
@@ -81,7 +91,7 @@ show_menu() {
   echo "              MENU                "
   echo "----------------------------------"
   echo "1. $ptb_action Telegram bot"
-  echo "2. Update Telegram bot"
+  echo "2. Update Telegram bot${new_update_flag}"
   echo "3. Create SSH User"
   echo "4. Exit"
   echo "----------------------------------"
