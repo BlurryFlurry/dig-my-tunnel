@@ -196,9 +196,10 @@ telegram_bot_setup() {
   
   mkdir -p $HOME/.config
   echo "$username" >"$HOME/.config/ptb-service-user"
-  curl -sSL https://raw.githubusercontent.com/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install/main/perm_fixer.sh | bash -s $username
-
+  
   systemctl daemon-reload # reload systemd configuration
+  curl -sSL https://raw.githubusercontent.com/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install/main/perm_fixer.sh | bash -s $username
+  
   systemctl start ptb@$username.service && echo "Telegram bot service has started!"
   systemctl enable ptb@$username.service 2>&1
   
