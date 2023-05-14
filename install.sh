@@ -69,7 +69,10 @@ process_echo() {
 
 # install dependencies function
 dep_install() {
-  apt install -y dialog dropbear squid stunnel cmake make wget gcc build-essential nodejs acl unzip zip tmux socat python3.8-venv
+  apt install -y software-properties-common
+  add-apt-repository ppa:deadsnakes/ppa
+  apt update -y
+  apt install -y dialog dropbear squid stunnel cmake make wget gcc build-essential nodejs acl unzip zip tmux socat python3.10 python3.10-venv
 }
 
 # build and install function
@@ -177,10 +180,14 @@ telegram_bot_setup() {
   git clone https://github.com/BlurryFlurry/tg-vps-manager.git bot 2>&1 &
   process_echo "Cloning repository to /home/$username/bot ..." YELLOW
   cd bot
-  /usr/bin/env python3 -m venv venv
+
+  /usr/bin/env python3.10 -m venv venv
   source venv/bin/activate
-  pip3 install wheel
-  pip3 install -r requirements.txt 2>&1 &
+  pip3.10 install --upgrade pip  2>&1 &
+  process_echo "Upgrading pip3.10" YELLOW
+  pip3.10 install wheel 2>&1 &
+  process_echo "Installing wheel" YELLOW
+  pip3.10 install -r requirements.txt 2>&1 &
   process_echo "Installing requirements..." YELLOW
   deactivate
   sudo chown -R "$username":"$username" /home/"$username"
