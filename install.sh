@@ -102,7 +102,7 @@ zerossl_setup() {
   2 "Provide a direct remote download link to fetch the zerossl certificate zip file"
   3 "acme.sh easy automation")
 
-  CHOICE=$(dialog --clear \
+  CHOICE=$(dialog --clear --nocancel \
     --backtitle "$BACKTITLE" \
     --title "$TITLE" \
     --menu "$MENU" \
