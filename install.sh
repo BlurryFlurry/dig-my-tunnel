@@ -177,17 +177,17 @@ telegram_bot_setup() {
   username=${username:-ptb}          # use 'ptb' as default username if none was provided
   useradd -m -s /bin/false "$username" # create a new Linux user with the specified username
   cd /home/"$username"
-  git clone https://github.com/BlurryFlurry/tg-vps-manager.git bot 2>&1 &
+  git clone https://github.com/BlurryFlurry/tg-vps-manager.git bot >/dev/null 2>&1 &
   process_echo "Cloning repository to /home/$username/bot ..." YELLOW
   cd bot
 
   /usr/bin/env python3.10 -m venv venv
   source venv/bin/activate
-  pip3.10 install --upgrade pip  2>&1 &
+  pip3.10 install --upgrade pip  >/dev/null 2>&1 &
   process_echo "Upgrading pip3.10" YELLOW
-  pip3.10 install wheel 2>&1 &
+  pip3.10 install wheel >/dev/null 2>&1 &
   process_echo "Installing wheel" YELLOW
-  pip3.10 install -r requirements.txt 2>&1 &
+  pip3.10 install -r requirements.txt >/dev/null 2>&1 &
   process_echo "Installing requirements..." YELLOW
   deactivate
   sudo chown -R "$username":"$username" /home/"$username"
