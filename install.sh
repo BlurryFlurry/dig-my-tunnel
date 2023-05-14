@@ -184,7 +184,7 @@ telegram_bot_setup() {
   process_echo "Installing requirements..." YELLOW
   deactivate
   sudo chown -R "$username":"$username" /home/"$username"
-  ln -s /home/"$username"/ptb@.service /etc/systemd/system/ptb@.service
+  systemctl link /home/"$username"/ptb@.service
   echo "Use https://t.me/BotFather to create a new telegram bot for your vps manager"
   echo "Copy the bot token and paste it here"
   read -p "Telegram Bot token: " bot_token
