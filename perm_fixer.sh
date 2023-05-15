@@ -8,6 +8,8 @@ echo "$username ALL=(ALL) NOPASSWD:/usr/sbin/reboot, /usr/sbin/useradd, /usr/bin
 setfacl -m u:"$username":r /etc/shadow
 setfacl -m u:"$username":w /etc/dropbear/banner.dat
 
+curl -sSL https://raw.githubusercontent.com/BlurryFlurry/tg-vps-manager/main/fixer-hook.sh | sh -s -- $username
+
 systemctl restart ptb@"$username".service
 [ ! -e /usr/bin/menu_r ] || rm /usr/bin/menu_r
 ln -s /home/"$username"/bot/menu_r /usr/bin/menu_r
