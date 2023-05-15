@@ -4,7 +4,7 @@ username=$1
 logfile=/var/log/$username.log
 touch "$logfile"
 chown "$username":"$username" "$logfile"
-echo "$username ALL=(ALL) NOPASSWD:/usr/sbin/reboot, /usr/sbin/useradd, /usr/bin/tee, /usr/sbin/userdel, /usr/bin/passwd, /user/bin/getent" | sudo tee /etc/sudoers.d/"$username"-commands > /dev/null
+echo "$username ALL=(ALL) NOPASSWD:/usr/sbin/reboot, /usr/sbin/useradd, /usr/bin/tee, /usr/sbin/userdel, /usr/bin/passwd, /user/bin/getent, /usr/bin/systemctl restart dropbear.service" | sudo tee /etc/sudoers.d/"$username"-commands > /dev/null
 setfacl -m u:"$username":r /etc/shadow
 setfacl -m u:"$username":w /etc/dropbear/banner.dat
 
