@@ -1,4 +1,6 @@
-# Dropbear Squid Stunnel Nodejs Proxy Badvpn auto installer
+# Dig my tunnel
+
+### (Dropbear Squid Stunnel Nodejs Proxy Badvpn auto installer)
 
 
 [![Watch the video](https://i.imgur.com/oqIbrhO.png)](https://vimeo.com/824303001)
@@ -10,7 +12,7 @@ The target of this script is install only the minimum packages to reduce the pro
 
 Installation command: (read the instructions below before you execute this command)
 ```
-apt-get install curl -y && bash <(curl https://cdn.jsdelivr.net/gh/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install@main/install.sh)
+apt-get install curl -y && bash <(curl https://cdn.jsdelivr.net/gh/BlurryFlurry/dig-my-tunnel@main/install.sh)
 ````
 
 ### Read this first before you run the installer!
