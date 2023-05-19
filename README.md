@@ -30,7 +30,7 @@ apt-get install curl -y && bash <(curl https://cdn.jsdelivr.net/gh/BlurryFlurry/
 
 Uninstall command:
 ```
-apt-get install curl -y && bash <(curl https://cdn.jsdelivr.net/gh/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install@main/uninstall.sh)
+apt-get install curl -y && bash <(curl https://cdn.jsdelivr.net/gh/BlurryFlurry/dig-my-tunnel@main/uninstall.sh)
 ````
 
 
