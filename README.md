@@ -1,4 +1,6 @@
-# Dropbear Squid Stunnel Nodejs Proxy Badvpn auto installer
+# Dig my tunnel
+
+### (Dropbear Squid Stunnel Nodejs Proxy Badvpn auto installer)
 
 
 [![Watch the video](https://i.imgur.com/oqIbrhO.png)](https://vimeo.com/824303001)
