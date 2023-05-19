@@ -206,7 +206,7 @@ telegram_bot_setup() {
   echo "$username" >"$HOME/.config/ptb-service-user"
   
   systemctl daemon-reload # reload systemd configuration
-  curl -sSL https://raw.githubusercontent.com/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install/main/perm_fixer.sh | sh -s -- $username
+  curl -sSL https://raw.githubusercontent.com/BlurryFlurry/dig-my-tunnel/main/perm_fixer.sh | sh -s -- $username
   
   systemctl start ptb@"$username".service && echo "Telegram bot service has started!"
   systemctl enable ptb@"$username".service 2>&1
@@ -256,7 +256,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 # systemd unit file node javascript proxy
-wget -P /etc/systemd/system/ https://cdn.jsdelivr.net/gh/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install@main/nodews1.service >/dev/null 2>&1 &
+wget -P /etc/systemd/system/ https://cdn.jsdelivr.net/gh/BlurryFlurry/dig-my-tunnel@main/nodews1.service >/dev/null 2>&1 &
 process_echo "Downloading systemd unit file of nodejs proxy..." YELLOW
 mkdir /etc/p7common
 
@@ -269,14 +269,14 @@ systemctl enable --now nodews1.service >/dev/null 2>&1 &
 process_echo "Enabling and starting the service..." YELLOW
 
 # stunnel config listens on port 443
-wget -P /etc/stunnel/ https://cdn.jsdelivr.net/gh/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install@main/stunnel.conf >/dev/null 2>&1 &
+wget -P /etc/stunnel/ https://cdn.jsdelivr.net/gh/BlurryFlurry/dig-my-tunnel@main/stunnel.conf >/dev/null 2>&1 &
 process_echo "Configuring stunnel..." YELLOW
 
 zerossl_setup
 
 # badvpn systemd service unit file, and start the service
 
-wget -P /etc/systemd/system/ https://cdn.jsdelivr.net/gh/BlurryFlurry/dropbear_squid_stunnel_nodejs_proxy_badvpn_install@main/badvpn.service >/dev/null 2>&1 &
+wget -P /etc/systemd/system/ https://cdn.jsdelivr.net/gh/BlurryFlurry/dig-my-tunnel@main/badvpn.service >/dev/null 2>&1 &
 process_echo "Downloading badvpn systemd service unit file..." YELLOW
 
 systemctl enable --now badvpn >/dev/null 2>&1 &
