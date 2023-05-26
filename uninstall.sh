@@ -30,11 +30,12 @@ systemctl stop squid.service
 systemctl disable squid.service
 apt remove squid -y
 
-# remove badvpn service
+# remove badvpn / service
 systemctl stop badvpn.service
 systemctl disable badvpn.service
 rm /etc/systemd/system/badvpn.service
-
+rm /usr/local/bin/badvpn-udpgw
+rm /usr/local/share/man/badvpn*
 
 
 rm -rf /usr/bin/menu_r
