@@ -290,6 +290,10 @@ process_echo "Downloading badvpn systemd service unit file..." YELLOW
 systemctl enable --now badvpn >/dev/null 2>&1 &
 process_echo "starting badvpn unit file..." YELLOW
 
+vnstat_setup >/dev/null 2>&1 &
+process_echo "Configuring vnstat..." YELLOW
+
+
 echo "Configuring security settings.."
 # pam service disable enforce_for_root option if exists
 sed -i 's/enforce_for_root//' /etc/pam.d/common-password
