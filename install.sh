@@ -72,8 +72,16 @@ dep_install() {
   apt install -y software-properties-common
   add-apt-repository ppa:deadsnakes/ppa
   apt update -y
-  apt install -y dialog dropbear squid stunnel cmake make wget gcc build-essential nodejs acl unzip zip tmux socat python3.10 python3.10-venv
+  apt install -y dialog dropbear squid stunnel cmake make wget gcc build-essential nodejs acl unzip zip tmux socat python3.10 python3.10-venv vnstat
 }
+
+# function to enable and start vnstat service
+vnstat_setup() {
+  systemctl enable vnstat.service
+  systemctl start vnstat.service
+  vnstat -u
+}
+
 
 # build and install function
 build_install_badvpn() {

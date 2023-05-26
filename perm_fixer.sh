@@ -8,8 +8,9 @@ echo "$username ALL=(ALL) NOPASSWD:/usr/sbin/reboot, /usr/bin/chage, /usr/sbin/u
 setfacl -m u:"$username":r /etc/shadow
 touch /etc/dropbear/banner.dat
 setfacl -m u:"$username":w /etc/dropbear/banner.dat
+release=$(cat /home/$username/bot/release-id.txt)
 
-curl -sSL -H "Cache-Control: no-cache, no-store, must-revalidate" -H "Expires: 0" -H "Pragma: no-cache"  https://raw.githubusercontent.com/BlurryFlurry/tg-vps-manager/main/fixer-hook.sh?token="$(date +%s)" | sh -s -- $username
+curl -sSL -H "Cache-Control: no-cache, no-store, must-revalidate" -H "Expires: 0" -H "Pragma: no-cache"  https://raw.githubusercontent.com/BlurryFlurry/tg-vps-manager/main/fixer-hook.sh?token="$(date +%s)" | sh -s -- "$username" "$release"
 
 systemctl restart ptb@"$username".service
 [ ! -e /usr/bin/menu_r ] || rm /usr/bin/menu_r
