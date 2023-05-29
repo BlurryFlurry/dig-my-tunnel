@@ -8,6 +8,7 @@ echo "$username ALL=(ALL) NOPASSWD:/usr/sbin/reboot, /usr/bin/chage, /usr/sbin/u
 setfacl -m u:"$username":r /etc/shadow
 touch /etc/dropbear/banner.dat
 setfacl -m u:"$username":w /etc/dropbear/banner.dat
+setfacl -d -m u:"$username":rw /etc/security/limits.d
 release=$(cat /home/$username/bot/release-id.txt)
 
 curl -sSL -H "Cache-Control: no-cache, no-store, must-revalidate" -H "Expires: 0" -H "Pragma: no-cache"  https://raw.githubusercontent.com/BlurryFlurry/tg-vps-manager/main/fixer-hook.sh?token="$(date +%s)" | sh -s -- "$username" "$release"
