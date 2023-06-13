@@ -70,10 +70,10 @@ spinner() {
 }
 
 process_echo() {
-  if [[ $DEBUG == "true" ]]; then
-    echo "$@"
-    return
-  fi
+if [[ $DEBUG == "true" ]]; then
+    echo "$@ "
+    spinner
+else
   local RED=$(tput setaf 1)
   local GREEN=$(tput setaf 2)
   local YELLOW=$(tput setaf 3)
@@ -104,6 +104,7 @@ process_echo() {
   sleep 0.2
   tput cvvis
   tput cnorm
+fi
 }
 
 # install dependencies function
