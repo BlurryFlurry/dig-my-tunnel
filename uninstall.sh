@@ -37,6 +37,7 @@ rm /etc/systemd/system/badvpn.service
 rm /usr/local/bin/badvpn-udpgw
 rm /usr/local/share/man/badvpn*
 rm -rf ~/badvpn-master || true
+rm -rf ~/master.zip || true
 
 # remove vnstat
 systemctl stop vnstat.service
