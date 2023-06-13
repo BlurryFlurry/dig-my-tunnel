@@ -19,6 +19,8 @@ rm -rf /etc/systemd/system/nodews1.service
 systemctl stop ptb@$ptb_service_user.service
 systemctl disable ptb@$ptb_service_user.service
 rm -rf /etc/systemd/system/ptb@.service
+#delete ptb service user
+userdel -rf $ptb_service_user
 
 # remove stunnel
 systemctl stop stunnel4.service
