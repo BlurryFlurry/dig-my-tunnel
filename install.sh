@@ -53,15 +53,7 @@ fi
 declare process_echo_history
 declare last_process_status
 spinner() {
-if [[ $DEBUG == "true" ]]; then
-    local pid=$!
-    local delay=0.20
-    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
-    echo "..."
-    sleep $delay
-  done
-    return
-fi
+set +x
   #spinner animation
   local pid=$!
   local delay=0.20
@@ -76,6 +68,9 @@ fi
   wait $pid
   last_process_status=$?
   printf "    \b\b\b\b"
+  if [[ $DEBUG == "true" ]]; then
+  set -x
+  fi
 }
 
 process_echo() {
