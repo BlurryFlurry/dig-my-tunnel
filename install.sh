@@ -14,6 +14,11 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;
+    -d|--debug)
+      DEBUG="$2"
+      shift # past argument
+      shift # past value
+      ;;
     -*|--*)
       echo "Unknown option $1"
       exit 1
@@ -28,6 +33,10 @@ done
 set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 # script fails on error
 set -e
+
+if [ "$DEBUG" == "true" ]; then
+    set -x
+fi
 
 #######################################################################################
 #########                                                                      ########
