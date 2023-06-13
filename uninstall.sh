@@ -38,6 +38,10 @@ rm /usr/local/bin/badvpn-udpgw
 rm /usr/local/share/man/badvpn*
 rm -rf ~/badvpn-master || true
 
+# remove vnstat
+systemctl stop vnstat.service
+systemctl disable vnstat.service
+apt remove vnstat -y
 
 rm -rf /usr/bin/menu_r
 rm -rf /etc/p7common
