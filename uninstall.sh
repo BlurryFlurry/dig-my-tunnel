@@ -46,5 +46,7 @@ apt remove vnstat -y
 rm -rf /usr/bin/menu_r
 rm -rf /etc/p7common
 
+# delete certs folder
+rm -rf /certs
 
 echo "Try 'apt-get autoremove' command for remove orphan packages."
