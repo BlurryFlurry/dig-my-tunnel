@@ -210,7 +210,7 @@ zerossl_setup() {
     if [[  $CERT_TYPE == "staging"  ]]; then
           bash ~/.acme.sh/acme.sh --issue --standalone -d "$zerossl_domain" --force --staging --test >/dev/null 2>&1 &
           process_echo "Issuing staging certificates..."
-    elif [[  $CERT_TYPE == "production"  ]]; then
+    else
               bash ~/.acme.sh/acme.sh --issue --standalone -d "$zerossl_domain" --force >/dev/null 2>&1 &
               process_echo "issuing standalone certificates..."
     fi
