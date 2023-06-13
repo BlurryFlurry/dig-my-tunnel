@@ -11,7 +11,7 @@ set -e
 apt remove dialog dropbear squid acl -y
 
 # remove nodews1 service
-systemctl stope nodews1.service
+systemctl stop nodews1.service
 systemctl disable nodews1.service
 rm -rf /etc/systemd/system/nodews1.service
 
