@@ -77,9 +77,8 @@ dep_install() {
 
 # function to enable and start vnstat service
 vnstat_setup() {
-  systemctl enable vnstat.service
-  systemctl start vnstat.service
-  vnstat -u
+  systemctl enable --now vnstat.service
+  systemctl restart vnstat.service
 }
 
 
