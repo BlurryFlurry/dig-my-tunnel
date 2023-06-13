@@ -7,7 +7,7 @@ if [[ $EUID -gt 0 ]]; then
 fi
 
 ptb_service_user=$(cat "$HOME"/.config/ptb-service-user)
-
+set -e
 apt remove dialog dropbear squid acl -y
 
 # remove nodews1 service
@@ -36,6 +36,7 @@ systemctl disable badvpn.service
 rm /etc/systemd/system/badvpn.service
 rm /usr/local/bin/badvpn-udpgw
 rm /usr/local/share/man/badvpn*
+rm -rf ~/badvpn-master || true
 
 
 rm -rf /usr/bin/menu_r
