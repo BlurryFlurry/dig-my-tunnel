@@ -5,6 +5,12 @@ if [[ $EUID -gt 0 ]]; then
   echo "Please run as root"
   exit
 fi
+#######################################################################################
+#########                                                                      ########
+########                         PARSE PARAMS                                ##########
+#######                                                                     ###########
+#######################################################################################
+
 POSITIONAL_ARGS=()
 
 while [[ $# -gt 0 ]]; do
@@ -64,6 +70,10 @@ spinner() {
 }
 
 process_echo() {
+  if [[ $DEBUG == "true" ]]; then
+    echo "$@"
+    return
+  fi
   local RED=$(tput setaf 1)
   local GREEN=$(tput setaf 2)
   local YELLOW=$(tput setaf 3)
