@@ -5,7 +5,27 @@ if [[ $EUID -gt 0 ]]; then
   echo "Please run as root"
   exit
 fi
+POSITIONAL_ARGS=()
 
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -c|--cert-type)
+      CERT_TYPE="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -*|--*)
+      echo "Unknown option $1"
+      exit 1
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1") # save positional arg
+      shift # past argument
+      ;;
+  esac
+done
+
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 # script fails on error
 set -e
 
@@ -158,9 +178,13 @@ zerossl_setup() {
     bash ~/.acme.sh/acme.sh --register-account -m "$zerossl_email" >/dev/null 2>&1 &
     process_echo "Registering zerossl account..."
     #    bash ~/.acme.sh/acme.sh --issue --standalone -d "$zerossl_domain" --force --staging --test >/dev/null 2>&1 &
-    bash ~/.acme.sh/acme.sh --issue --standalone -d "$zerossl_domain" --force >/dev/null 2>&1 &
-    process_echo "issuing standalone certificates..."
-    bash ~/.acme.sh/acme.sh --installcert -d "$zerossl_domain" --fullchainpath "$certs_dir"/bundle.cer --keypath "$certs_dir"/private.key >/dev/null 2>&1 &
+    if [[  $CERT_TYPE == "staging"  ]]; then
+          bash ~/.acme.sh/acme.sh --issue --standalone -d "$zerossl_domain" --force --staging --test >/dev/null 2>&1 &
+          process_echo "Issuing staging certificates..."
+    elif [[  $CERT_TYPE == "production"  ]]; then
+              bash ~/.acme.sh/acme.sh --issue --standalone -d "$zerossl_domain" --force >/dev/null 2>&1 &
+              process_echo "issuing standalone certificates..."
+    fi
     process_echo "Installing certificates..."
     cat "$certs_dir"/private.key "$certs_dir"/bundle.cer >/etc/stunnel/stunnel.pem
     chmod 400 /etc/stunnel/stunnel.pem
