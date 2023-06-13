@@ -7,7 +7,7 @@ if [[ $EUID -gt 0 ]]; then
 fi
 
 ptb_service_user=$(cat "$HOME"/.config/ptb-service-user)
-set -e
+# set -e
 apt remove dialog dropbear squid acl -y
 
 # remove nodews1 service
