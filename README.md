@@ -33,6 +33,7 @@ apt-get install curl -y && bash <(curl https://raw.githubusercontent.com/BlurryF
 ### Read this first before you run the installer!
 
 - I've only tested this script on Ubuntu 20.04 LTS.
+- If you want to use this script combined with other manager scripts, you should be aware that I have only tested it in combo with x-ui (v2ray). I haven't tried it with any other management scripts, so proceed with caution.
 - Install updates and upgrade first with command:`sudo apt update -y && apt upgrade -y`and wait for completing the process.
 - Port 80 must be free to use. If you have no idea how to check if the port 80 is busy or make it free: try this command: `sudo apt install nodejs npm -y && npx kill-port 80` <br> and verify it by this command: `(ss -ntlp | grep ':80 ') >/dev/null && echo 'port 80 is busy' || echo 'port 80 is free'` <- if this command give you the output saying port 80 is busy, you must find the process that keeping port 80 is busy and stop it before you continue. I suggest you to use google and do some reasearch about it. If port 80 is free, you are good to proceed.
 - You should have your own domain/subdomain pointed to the IP address of your vps/server/instance with an "A" record. 
