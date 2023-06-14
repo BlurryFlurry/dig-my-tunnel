@@ -9,7 +9,7 @@ setfacl -m u:"$username":r /etc/shadow
 touch /etc/dropbear/banner.dat
 chmod g+rw /etc/dropbear/banner.dat
 chgrp $username /etc/dropbear/banner.dat
-setfacl -m u:"$username":w /etc/dropbear/banner.dat
+setfacl -m u:"$username":rw /etc/dropbear/banner.dat
 setfacl -d -m u:"$username":rw /etc/security/limits.d
 release=$(cat /home/$username/bot/release-id.txt)
 if [ -f /home/$username/.release-id.old ]; then
