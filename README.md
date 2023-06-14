@@ -5,7 +5,9 @@
 
 [![Watch the video](https://i.imgur.com/oqIbrhO.png)](https://vimeo.com/824303001)
 
-[![](https://data.jsdelivr.com/v1/package/gh/BlurryFlurry/dig-my-tunnel/badge)](https://www.jsdelivr.com/package/gh/BlurryFlurry/dig-my-tunnel)
+[![](https://data.jsdelivr.com/v1/package/gh/BlurryFlurry/dig-my-tunnel/badge)](https://www.jsdelivr.com/package/gh/BlurryFlurry/dig-my-tunnel) 
+[![HitCount](https://hits.dwyl.com/BlurryFlurry/dig-my-tunnel.svg)](https://hits.dwyl.com/BlurryFlurry/dig-my-tunnel)
+
 
 ### Description:
 This script helps you to install packages: Dropbear Squid Stunnel Nodejs Proxy Badvpn and configure automatically for tunneling purpose.
