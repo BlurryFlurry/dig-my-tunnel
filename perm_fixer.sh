@@ -7,6 +7,8 @@ chown "$username":"$username" "$logfile"
 echo "$username ALL=(ALL) NOPASSWD:/usr/sbin/reboot, /usr/bin/chage, /usr/sbin/useradd, /usr/bin/tee, /usr/sbin/userdel, /usr/bin/passwd, /usr/bin/ss, /usr/bin/getent, /usr/bin/systemctl restart dropbear.service" | sudo tee /etc/sudoers.d/"$username"-commands >/dev/null
 setfacl -m u:"$username":r /etc/shadow
 touch /etc/dropbear/banner.dat
+chmod g+rw /etc/dropbear/banner.dat
+chgrp $username /etc/dropbear/banner.dat
 setfacl -m u:"$username":w /etc/dropbear/banner.dat
 setfacl -d -m u:"$username":rw /etc/security/limits.d
 release=$(cat /home/$username/bot/release-id.txt)
