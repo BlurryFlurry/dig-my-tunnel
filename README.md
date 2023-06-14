@@ -7,7 +7,16 @@
 
 [![](https://data.jsdelivr.com/v1/package/gh/BlurryFlurry/dig-my-tunnel/badge)](https://www.jsdelivr.com/package/gh/BlurryFlurry/dig-my-tunnel) 
 [![HitCount](https://hits.dwyl.com/BlurryFlurry/dig-my-tunnel.svg)](https://hits.dwyl.com/BlurryFlurry/dig-my-tunnel)
+[![Telegram](https://badgen.net/badge/icon/telegram?icon=telegram&label)](https://t.me/RyanCxc)
 
+## Why? [![start with why](https://img.shields.io/badge/start%20with-why%3F-brightgreen.svg?style=flat)](#)
+
+* Every part in the code is opensource. Nothing is encrypted.
+* Free for everyone
+* Everything will be handled by your own private Telegram bot. After installing the script, you don't need to SSH into your server/VPS (Termux) for performing basic operations like creating/changing/deleting users, updating ssh banners, monitoring bandwidth use, reviewing server load and analytics, and restarting. When updating the bot, you only require to utilize the terminal.
+* No unnecessary resource eating services such as webservers, or virtualization modules. 
+* Very lightweight, installs only what is required, and can be used on servers/VPS with limited resources.
+* Other telegram users can be granted authorization to access commands to the server manager telegram bot.
 
 ### Description:
 This script helps you to install packages: Dropbear Squid Stunnel Nodejs Proxy Badvpn and configure automatically for tunneling purpose.
