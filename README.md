@@ -25,9 +25,9 @@ The target of this script is install only the minimum packages to reduce the pro
 
 Installation command: (read the instructions below before you execute this command)
 
-~~apt-get install curl -y && bash <(curl https://cdn.jsdelivr.net/gh/BlurryFlurry/dig-my-tunnel@main/install.sh)~~
+~~apt-get install curl -y && bash <(curl https://raw.githubusercontent.com/BlurryFlurry/dig-my-tunnel/main/install.sh)~~
 ```
-apt-get install curl -y && bash <(curl https://raw.githubusercontent.com/BlurryFlurry/dig-my-tunnel/main/install.sh)
+apt-get install curl -y && bash <(curl https://cdn.jsdelivr.net/gh/BlurryFlurry/dig-my-tunnel@main/install.sh)
 ````
 
 ### Read this first before you run the installer!
@@ -46,9 +46,10 @@ apt-get install curl -y && bash <(curl https://raw.githubusercontent.com/BlurryF
 
 Uninstall command:
 
-~~apt-get install curl -y && bash <(curl https://cdn.jsdelivr.net/gh/BlurryFlurry/dig-my-tunnel@main/uninstall.sh)~~
+
+~~apt-get install curl -y && bash <(curl https://raw.githubusercontent.com/BlurryFlurry/dig-my-tunnel/main/uninstall.sh)~~
 ```
-apt-get install curl -y && bash <(curl https://raw.githubusercontent.com/BlurryFlurry/dig-my-tunnel/main/uninstall.sh)
+apt-get install curl -y && bash <(curl https://cdn.jsdelivr.net/gh/BlurryFlurry/dig-my-tunnel@main/uninstall.sh)
 ````
 
 
